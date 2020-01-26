@@ -1,15 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+
+[System.Serializable]
+public struct DtTimeStruct
+{
+	public int	Year,
+				Month,
+				Day,
+				Hours,
+				Mins,	
+				Seconds;
+}
+
 
 /// <summary>
 /// Spin the object at a specified speed
 /// </summary>
 public class SpinFree : MonoBehaviour {
-	[Tooltip("Spin: Yes or No")]
+	[HideInInspector]
 	public bool spin;
-	[Tooltip("Spin the parent object instead of the object this script is attached to")]
-	public bool spinParent;
-	public float speed = 10f;
+
+	[Tooltip("Time in seconds for earth to rotate once")]
+	public float rotationTime = 86400;
+
+	public bool realTime = true;
+	public DtTimeStruct GMT;
+
+	[HideInInspector]
+	public DateTime dtGMT;
+
+	[SerializeField]
+	private float remainingTime;
 
 	[HideInInspector]
 	public bool clockwise = true;
@@ -18,24 +40,107 @@ public class SpinFree : MonoBehaviour {
 	[HideInInspector]
 	public float directionChangeSpeed = 2f;
 
+
+	private float speed = 10f;
+
 	// Update is called once per frame
 	void Update() {
+
+		CheckGMT();
+
+		if (!realTime)
+		{
+			spin = false;
+		}
+		else
+		{
+			spin = true;
+		}
+		dtGMT = new DateTime(GMT.Year, GMT.Month, GMT.Day, GMT.Hours, GMT.Mins, GMT.Seconds);
+
+		//update remaining time of rotation
+		if (!realTime)
+		{
+			remainingTime = rotationTime - TimeinSeconds(GMT.Hours, GMT.Mins, GMT.Seconds);
+		}
+		else
+		{
+			if (remainingTime <= 0)
+			{
+				remainingTime = rotationTime;
+			}
+			else
+			{
+				remainingTime -= Time.deltaTime;
+			}
+		}
+
+		//calculate the rotation amount
+		speed = 360.0f / rotationTime;
+
+		
 		if (direction < 1f) {
 			direction += Time.deltaTime / (directionChangeSpeed / 2);
 		}
 
 		if (spin) {
 			if (clockwise) {
-				if (spinParent)
-					transform.parent.transform.Rotate(Vector3.up, (speed * direction) * Time.deltaTime);
-				else
 					transform.Rotate(Vector3.up, (speed * direction) * Time.deltaTime);
 			} else {
-				if (spinParent)
-					transform.parent.transform.Rotate(-Vector3.up, (speed * direction) * Time.deltaTime);
-				else
 					transform.Rotate(-Vector3.up, (speed * direction) * Time.deltaTime);
 			}
+		}
+		else
+		{
+			Vector3 dir = (Vector3.up * (speed * direction) * remainingTime);
+			transform.eulerAngles = new Vector3(dir.x, dir.y, dir.z);
+		}
+	}
+
+
+	int TimeinSeconds(int h, int m, int s)
+	{
+		int t;
+
+		t = (h * 60 * 60) + (m * 60) + s;
+
+		return t;
+	}
+
+
+	void CheckGMT()
+	{
+		if (GMT.Seconds < 0)
+		{
+			GMT.Mins -= 1;
+			GMT.Seconds = 59;
+		}
+		if (GMT.Seconds > 59)
+		{
+			GMT.Mins += 1;
+			GMT.Seconds = 0;
+		}
+
+		if (GMT.Mins < 0)
+		{
+			GMT.Hours -= 1;
+			GMT.Mins = 59;
+		}
+		if (GMT.Mins > 59)
+		{
+			GMT.Hours += 1;
+			GMT.Mins = 0;
+		}
+
+		if (GMT.Hours < 0)
+		{
+			GMT.Day -= 1;
+			GMT.Hours = 23;
+		}
+		if (GMT.Hours > 23)
+		{
+			GMT.Day += 1;
+			GMT.Hours = 0;
 		}
 	}
 }
