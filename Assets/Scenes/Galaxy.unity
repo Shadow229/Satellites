@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f725d890795a5a148b91f6f989f168ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listIndex: 19
+  listIndex: 15
   TLEFiles:
   - Active
   - Amateur
@@ -427,8 +427,8 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 15000
-  field of view: 60
+  far clip plane: 100000
+  field of view: 92.2
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -454,7 +454,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1444246540}
   m_LocalRotation: {x: 0.1288103, y: -0.672368, z: 0.120473064, w: 0.7188988}
-  m_LocalPosition: {x: 12903, y: 4553, z: -202}
+  m_LocalPosition: {x: 30972, y: 11257, z: -1412}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -472,17 +472,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34c20de9ecc8bde41b5ed3a66a8071a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spin: 0
   rotationTime: 86400
   realTime: 0
   GMT:
-    Year: 2019
+    Year: 2020
     Month: 1
-    Day: 26
-    Hours: 0
-    Mins: 0
-    Seconds: 0
-  remainingTime: 0
+    Day: 1
+    Hours: 1
+    Mins: 1
+    Seconds: 1
+  SetGMTNow: 0
+  Play: 1
+  SpeedMultiplier: -209
+  remainingTime: 86400
   clockwise: 1
   direction: 1
   directionChangeSpeed: 2
@@ -546,7 +548,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127196265}
-  m_LocalRotation: {x: -0.058251783, y: -0.90831256, z: -0.07176358, w: -0.40795228}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -560,14 +562,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127262597}
-  m_LocalRotation: {x: 0.15654546, y: -0.03794026, z: 0.81282234, w: 0.55979806}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 318.16, y: 318.16, z: 318.16}
   m_Children:
   - {fileID: 2127528157}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 166.294, y: -527.395, z: -427.59}
+  m_LocalEulerAnglesHint: {x: -9.2, y: 0, z: 9.8}
 --- !u!23 &2129482359
 MeshRenderer:
   m_ObjectHideFlags: 0
