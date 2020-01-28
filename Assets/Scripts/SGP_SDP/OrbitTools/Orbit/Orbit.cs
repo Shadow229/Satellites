@@ -18,6 +18,8 @@ namespace Zeptomoby.OrbitTools
       // Caching variables
       private TimeSpan m_Period = new TimeSpan(0, 0, 0, -1);
 
+        public bool isError = false;
+
       // TLE caching variables
       private double m_Inclination;
       private double m_Eccentricity;

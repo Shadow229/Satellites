@@ -153,7 +153,9 @@ namespace Zeptomoby.OrbitTools
       {
          if ((e * e) > 1.0)
          {
-            throw new PropagationException("Error in satellite data");
+            Orbit.isError = true;
+                //throw new PropagationException("Error in satellite data");
+                throw new Exception("TLE Data not visualisable");
          }
 
          double beta = Math.Sqrt(1.0 - e * e);
