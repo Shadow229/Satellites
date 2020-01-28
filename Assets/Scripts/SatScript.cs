@@ -52,25 +52,31 @@ public class SatScript : MonoBehaviour
 
     void UpdateSatellite()
     {
-        //if there is an error with the orbit (ie, the sat is no longer in orbit and the TLE reflects no orbit trajectory)
-        if (sat.Orbit.isError)
-        {
-            //delete the prefab
-            GameObject.Destroy(this.gameObject);
+
+        if (sat != null)
+        {        
+            //if there is an error with the orbit (ie, the sat is no longer in orbit and the TLE reflects no orbit trajectory)
+            if (sat.Orbit.isError)
+            {
+                //delete the prefab
+                GameObject.Destroy(this.gameObject);
+                return;
+            }
+
+            //get date time value
+            DateTime dt = earthScript.realTime ? earthScript.TimeNow : earthScript.dtGMT;
+
+            //get the position at time after epoch
+            EciTime eciSDP4 = sat.PositionEci(dt);
+
+            //flip position values to orientate satelite to earth object
+            Vector3 position = new Vector3((float)eciSDP4.Position.X, (float)eciSDP4.Position.Z, (float)eciSDP4.Position.Y);
+
+
+            transform.position = position;
+
+            UpdateSatMetrics(eciSDP4);
         }
-
-        //get date time value
-        DateTime dt = earthScript.realTime ? System.DateTime.Now : earthScript.dtGMT;
-
-        //get the position at time after epoch
-        EciTime eciSDP4 = sat.PositionEci(dt);
-
-
-        Vector3 position = new Vector3((float)eciSDP4.Position.X, (float)eciSDP4.Position.Y, (float)eciSDP4.Position.Z);
-
-        transform.position = position;
-
-        UpdateSatMetrics(eciSDP4);
     }
 
     void UpdateSatMetrics(EciTime eciSDP4)

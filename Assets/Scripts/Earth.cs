@@ -3,7 +3,9 @@ using System.Collections;
 using System;
 
 [System.Serializable]
-public struct DtTimeStruct
+
+//change some of this for datetime functions - it'll handle the speed multipliers better and save on manual calcs and the try catch with out of date month params!
+public class DtTime
 {
 	public int	Year,
 				Month,
@@ -11,6 +13,44 @@ public struct DtTimeStruct
 				Hours,
 				Mins,	
 				Seconds;
+
+    public DtTime() {}
+    public DtTime(DateTime DtTime)
+    {
+        SetDateTime(DtTime);
+    }
+
+    public void SetDateTime(DateTime DtTime)
+    {
+        Year = DtTime.Year;
+        Month = DtTime.Month;
+        Day = DtTime.Day;
+        Hours = DtTime.Hour;
+        Mins = DtTime.Minute;
+        Seconds = DtTime.Second;
+    }
+
+    public void UpdateMonth()
+    {
+
+        if (Day > 29)
+        {
+            Month++;
+            Day = 1;
+            Hours = 0;
+            Mins = 0;
+            Seconds = 0;
+        }
+        else
+        {
+            Month--;
+
+            Hours = 23;
+            Mins = 59;
+            Seconds = 59;
+        }
+    }
+
 }
 
 
@@ -18,14 +58,22 @@ public struct DtTimeStruct
 /// Spin the object at a specified speed
 /// </summary>
 public class Earth : MonoBehaviour {
-	[HideInInspector]
-	public bool spin;
 
-	[Tooltip("Time in seconds for earth to rotate once")]
+    [HideInInspector]
+    public DateTime TimeNow;
+
+    //[Tooltip("Time in seconds for earth to rotate once")]
+    [HideInInspector]
 	public float rotationTime = 86400;
 
 	public bool realTime = true;
-	public DtTimeStruct GMT;
+	public DtTime GMT;
+    public bool SetGMTNow = true;
+    public bool Play = false;
+    [Range(-2000,2000)]
+    public int SpeedMultiplier = 1;
+
+    private float DeltaAcc = 0.0f;
 
 	[HideInInspector]
 	public DateTime dtGMT;
@@ -40,32 +88,46 @@ public class Earth : MonoBehaviour {
 	[HideInInspector]
 	public float directionChangeSpeed = 2f;
 
-    [HideInInspector]
-    Quaternion originalRot;
+    Quaternion AxisTilt;
+
+   // public Vector3 rotationVector;
+  //  Quaternion originalRot;
 
 
-	private float speed = 10f;
+
+    private float speed = 10f;
 
 
     private void Start()
     {
-        originalRot = transform.rotation;
+        AxisTilt = Quaternion.Euler(-0.29f, -37.65f, 0.4f);
+    }
+
+    private void FixedUpdate()
+    {
+        TimeNow = DateTime.Now;
     }
 
     // Update is called once per frame
     void Update() {
 
-		CheckGMT();
+        if (SetGMTNow)
+        {
+            GMT.SetDateTime(TimeNow);
+            SetGMTNow = false;
+        }
 
-		if (!realTime)
-		{
-			spin = false;
-		}
-		else
-		{
-			spin = true;
-		}
-		dtGMT = new DateTime(GMT.Year, GMT.Month, GMT.Day, GMT.Hours, GMT.Mins, GMT.Seconds);
+        try
+        {
+		    dtGMT = new DateTime(GMT.Year, GMT.Month, GMT.Day, GMT.Hours, GMT.Mins, GMT.Seconds);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            GMT.UpdateMonth();
+            CheckGMT();
+            throw;
+        }
+
 
 		//update remaining time of rotation
 		if (!realTime)
@@ -74,15 +136,8 @@ public class Earth : MonoBehaviour {
 		}
 		else
 		{
-			if (remainingTime <= 0)
-			{
-				remainingTime = rotationTime;
-			}
-			else
-			{
-				remainingTime -= Time.deltaTime;
-			}
-		}
+			remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
+		}	     
 
 		//calculate the rotation amount
 		speed = 360.0f / rotationTime;
@@ -92,21 +147,38 @@ public class Earth : MonoBehaviour {
 			direction += Time.deltaTime / (directionChangeSpeed / 2);
 		}
 
-		if (spin) {
-			if (clockwise) {
-					transform.Rotate(transform.up, (speed * direction) * Time.deltaTime);
-			} else {
-					transform.Rotate(-transform.up, (speed * direction) * Time.deltaTime);
-			}
+		if (realTime) 
+        {
+			transform.Rotate(transform.up, (speed * direction) * Time.deltaTime);
 		}
 		else
 		{
             float distDeg = speed * direction * remainingTime;
 
-			//Vector3 dir = (transform.up * (speed * direction) * remainingTime);
-           // transform.eulerAngles = new Vector3(dir.x, dir.y, dir.z);
-            transform.rotation = originalRot * Quaternion.AngleAxis(distDeg, Vector3.up);
+          //  originalRot = Quaternion.Euler(rotationVector);
 
+            //transform.rotation = originalRot * Quaternion.AngleAxis(distDeg, Vector3.up);
+
+            //End code after changes
+            transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
+
+        }
+
+        if (Play)
+        {
+            //acrue delta time
+            DeltaAcc += Time.deltaTime * SpeedMultiplier;
+
+            if (Math.Abs((DeltaAcc)) >= 1)
+            {
+                //add complete seconds onto the GMT
+                GMT.Seconds += (int)DeltaAcc;
+                DeltaAcc -= (int)DeltaAcc;
+
+                //check GMT for rollover
+                CheckGMT();
+            }
+          
         }
 	}
 
@@ -120,8 +192,30 @@ public class Earth : MonoBehaviour {
 		return t;
 	}
 
+    void InitEarthPosRot()
+    {
+        //if its switched to realtime - reinitialise the correct rotation of the earth
+        if (realTime)
+        {
+            remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
 
-	void CheckGMT()
+            //calculate the rotation amount
+            speed = 360.0f / rotationTime;
+
+            float distDeg = speed * direction * remainingTime;
+
+            transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
+        }
+    }
+
+
+    private void OnValidate()
+    {
+        CheckGMT();
+        InitEarthPosRot();
+    }
+
+    void CheckGMT()
 	{
 		if (GMT.Seconds < 0)
 		{
@@ -155,5 +249,18 @@ public class Earth : MonoBehaviour {
 			GMT.Day += 1;
 			GMT.Hours = 0;
 		}
-	}
+        if (GMT.Month < 1)
+        {
+            GMT.Day -= 1;
+            GMT.Month = 12;
+        }
+        if (GMT.Month > 12)
+        {
+            GMT.Year += 1;
+            GMT.Month = 1;
+        }
+    }
+
+
+
 }
