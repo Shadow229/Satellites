@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f725d890795a5a148b91f6f989f168ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listIndex: 15
+  listIndex: 19
   TLEFiles:
   - Active
   - Amateur
@@ -572,6 +572,7 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1407704761}
   m_Enabled: 1
+<<<<<<< HEAD
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa850fbd5b8aded44846f96e35f1a9f5, type: 3}
   m_Name: 
@@ -591,14 +592,58 @@ MonoBehaviour:
   m_AttemptUpdate: 1
   m_MatchFrameRate: 1
 --- !u!4 &1407704764
+=======
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 15000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &1444246543
+>>>>>>> parent of 45b8b38... Updated camera for in game view
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 1407704761}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+=======
+  m_GameObject: {fileID: 1444246540}
+  m_LocalRotation: {x: 0.1288103, y: -0.672368, z: 0.120473064, w: 0.7188988}
+  m_LocalPosition: {x: 12903, y: 4553, z: -202}
+>>>>>>> parent of 45b8b38... Updated camera for in game view
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -616,19 +661,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34c20de9ecc8bde41b5ed3a66a8071a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spin: 0
   rotationTime: 86400
   realTime: 0
   GMT:
-    Year: 2020
+    Year: 2019
     Month: 1
-    Day: 1
-    Hours: 1
-    Mins: 1
-    Seconds: 1
-  SetGMTNow: 0
-  Play: 1
-  SpeedMultiplier: -209
-  remainingTime: 86400
+    Day: 26
+    Hours: 0
+    Mins: 0
+    Seconds: 0
+  remainingTime: 0
   clockwise: 1
   direction: 1
   directionChangeSpeed: 2
@@ -692,7 +735,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127196265}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.058251783, y: -0.90831256, z: -0.07176358, w: -0.40795228}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -706,14 +749,19 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127262597}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.15654546, y: -0.03794026, z: 0.81282234, w: 0.55979806}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 318.16, y: 318.16, z: 318.16}
   m_Children:
   - {fileID: 2127528157}
   m_Father: {fileID: 0}
+<<<<<<< HEAD
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -9.2, y: 0, z: 9.8}
+=======
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 166.294, y: -527.395, z: -427.59}
+>>>>>>> parent of 45b8b38... Updated camera for in game view
 --- !u!23 &2129482359
 MeshRenderer:
   m_ObjectHideFlags: 0
