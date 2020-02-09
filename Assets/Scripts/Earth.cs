@@ -29,28 +29,6 @@ public class DtTime
         Mins = DtTime.Minute;
         Seconds = DtTime.Second;
     }
-
-    public void UpdateMonth()
-    {
-
-        if (Day > 29)
-        {
-            Month++;
-            Day = 1;
-            Hours = 0;
-            Mins = 0;
-            Seconds = 0;
-        }
-        else
-        {
-            Month--;
-
-            Hours = 23;
-            Mins = 59;
-            Seconds = 59;
-        }
-    }
-
 }
 
 
@@ -65,6 +43,13 @@ public class Earth : MonoBehaviour {
     //[Tooltip("Time in seconds for earth to rotate once")]
     [HideInInspector]
 	public float rotationTime = 86400;
+
+    //earth is 12742km - we need it about 0.4 unity units for AR.
+    private readonly float _diameter = 12742;
+    [HideInInspector]
+    public float ScaleAmount;
+    [SerializeField]
+    private float Scale = 0.4f;
 
 	public bool realTime = true;
 	public DtTime GMT;
@@ -84,23 +69,19 @@ public class Earth : MonoBehaviour {
 	[HideInInspector]
 	public bool clockwise = true;
 	[HideInInspector]
-	public float direction = 1f;
-	[HideInInspector]
 	public float directionChangeSpeed = 2f;
 
     Quaternion AxisTilt;
 
-   // public Vector3 rotationVector;
-  //  Quaternion originalRot;
-
-
-
-    private float speed = 10f;
+    private float spinSpeed = 10f;
 
 
     private void Start()
     {
         AxisTilt = Quaternion.Euler(-0.29f, -37.65f, 0.4f);
+        InitEarthPosRot();
+        //calculate the rotation amount
+        spinSpeed = 360.0f / rotationTime;
     }
 
     private void FixedUpdate()
@@ -109,61 +90,41 @@ public class Earth : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
-
-        if (SetGMTNow)
+    void Update()
+    {
+        if (realTime)
         {
-            GMT.SetDateTime(TimeNow);
-            SetGMTNow = false;
+            UpdateAutoRotation();
         }
+        else
+        {
+            UpdateManualRotation();
+        }
+	}
 
+
+    private void UpdateManualRotation()
+    {
+        //set manual time
         try
         {
-		    dtGMT = new DateTime(GMT.Year, GMT.Month, GMT.Day, GMT.Hours, GMT.Mins, GMT.Seconds);
+            dtGMT = new DateTime(GMT.Year, GMT.Month, GMT.Day, GMT.Hours, GMT.Mins, GMT.Seconds);
         }
         catch (ArgumentOutOfRangeException)
         {
-            GMT.UpdateMonth();
-            CheckGMT();
             throw;
         }
+        
+        //update remaining time
+        remainingTime = rotationTime - TimeinSeconds(GMT.Hours, GMT.Mins, GMT.Seconds);
 
+        //get rotation amount
+        float distDeg = spinSpeed * remainingTime;
 
-		//update remaining time of rotation
-		if (!realTime)
-		{
-			remainingTime = rotationTime - TimeinSeconds(GMT.Hours, GMT.Mins, GMT.Seconds);
-		}
-		else
-		{
-			remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
-		}	     
+        //rotate earth
+        transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
 
-		//calculate the rotation amount
-		speed = 360.0f / rotationTime;
-
-		
-		if (direction < 1f) {
-			direction += Time.deltaTime / (directionChangeSpeed / 2);
-		}
-
-		if (realTime) 
-        {
-			transform.Rotate(transform.up, (speed * direction) * Time.deltaTime);
-		}
-		else
-		{
-            float distDeg = speed * direction * remainingTime;
-
-          //  originalRot = Quaternion.Euler(rotationVector);
-
-            //transform.rotation = originalRot * Quaternion.AngleAxis(distDeg, Vector3.up);
-
-            //End code after changes
-            transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
-
-        }
-
+        //if play is selected, resume from date set
         if (Play)
         {
             //acrue delta time
@@ -174,13 +135,19 @@ public class Earth : MonoBehaviour {
                 //add complete seconds onto the GMT
                 GMT.Seconds += (int)DeltaAcc;
                 DeltaAcc -= (int)DeltaAcc;
-
-                //check GMT for rollover
-                CheckGMT();
             }
-          
         }
-	}
+
+    }
+
+    private void UpdateAutoRotation()
+    {
+        //set remaining time
+        remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
+
+        //rotate earth
+        transform.Rotate(transform.up, spinSpeed * Time.deltaTime);
+    }
 
 
 	int TimeinSeconds(int h, int m, int s)
@@ -199,10 +166,7 @@ public class Earth : MonoBehaviour {
         {
             remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
 
-            //calculate the rotation amount
-            speed = 360.0f / rotationTime;
-
-            float distDeg = speed * direction * remainingTime;
+            float distDeg = spinSpeed * remainingTime;
 
             transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
         }
@@ -211,56 +175,25 @@ public class Earth : MonoBehaviour {
 
     private void OnValidate()
     {
-        CheckGMT();
         InitEarthPosRot();
-    }
+        UpdateScale();
 
-    void CheckGMT()
-	{
-		if (GMT.Seconds < 0)
-		{
-			GMT.Mins -= 1;
-			GMT.Seconds = 59;
-		}
-		if (GMT.Seconds > 59)
-		{
-			GMT.Mins += 1;
-			GMT.Seconds = 0;
-		}
-
-		if (GMT.Mins < 0)
-		{
-			GMT.Hours -= 1;
-			GMT.Mins = 59;
-		}
-		if (GMT.Mins > 59)
-		{
-			GMT.Hours += 1;
-			GMT.Mins = 0;
-		}
-
-		if (GMT.Hours < 0)
-		{
-			GMT.Day -= 1;
-			GMT.Hours = 23;
-		}
-		if (GMT.Hours > 23)
-		{
-			GMT.Day += 1;
-			GMT.Hours = 0;
-		}
-        if (GMT.Month < 1)
+        if (SetGMTNow)
         {
-            GMT.Day -= 1;
-            GMT.Month = 12;
-        }
-        if (GMT.Month > 12)
-        {
-            GMT.Year += 1;
-            GMT.Month = 1;
+            GMT.SetDateTime(TimeNow);
+            SetGMTNow = false;
         }
     }
 
+
+    private void UpdateScale()
+    {
+        //set uniform scale
+        transform.localScale = new Vector3(Scale, Scale, Scale);
+
+        //update global scale amount (used for satelite positioning)
+        ScaleAmount = _diameter * transform.localScale.x;
+    }
 
 
 }

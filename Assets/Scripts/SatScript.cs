@@ -13,6 +13,9 @@ public class SatScript : MonoBehaviour
 
     public float Lat, Long, Altitude, Azmuth, Elevation, Range;
 
+    [SerializeField]
+    private float _rotSpeed, _rotAmt;
+
     GameObject earth;
     Earth earthScript;
 
@@ -32,14 +35,18 @@ public class SatScript : MonoBehaviour
         sat = new Satellite(tle1);
 
         //initialise sat
-        init();
+        Init();
 
     }
 
-    private void init()
+    private void Init()
     {
+        //update our satellites position on instantiation
         UpdateSatellite();
+        //enable to trail renderer from there
         GetComponent<TrailRenderer>().enabled = true;
+        //assign an arbitrary rotation around local up
+        _rotSpeed = UnityEngine.Random.Range(5f, 35f);
         
     }
 
@@ -72,8 +79,22 @@ public class SatScript : MonoBehaviour
             //flip position values to orientate satelite to earth object
             Vector3 position = new Vector3((float)eciSDP4.Position.X, (float)eciSDP4.Position.Z, (float)eciSDP4.Position.Y);
 
+            //scale position vecotor inline with earth scale
+            position /= earthScript.ScaleAmount;
 
+            //update position
             transform.position = position;
+
+            //face earth
+            Vector3 targetDirection = (earth.transform.position - transform.position).normalized;
+            //face earth
+
+            //this just wobbles.. no idea why it wont rotate around its local Y axis..
+            transform.up = targetDirection;
+            //rotate around x
+            _rotAmt = (_rotAmt + (_rotSpeed * Time.deltaTime)) % 360;
+            transform.eulerAngles += transform.up * _rotAmt;
+
 
             UpdateSatMetrics(eciSDP4);
         }
@@ -93,8 +114,6 @@ public class SatScript : MonoBehaviour
 
         GetAltitude();
 
-        //turn on the trail rendered
-        GetComponent<TrailRenderer>().enabled = true;
     }
 
     float GetAltitude()
