@@ -9,9 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 
-# =============== #
-# Unity generated #
-# =============== #
+# Unity Generated
 Temp/
 Library/
 
