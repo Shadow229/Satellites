@@ -113,7 +113,7 @@
     <None Include="Assets\Scripts\TLE Files\Spire.txt" />
     <None Include="Assets\Scripts\TLE Files\Other.txt" />
     <None Include="Assets\Scripts\TLE Files\Planet.txt" />
-    <None Include="Assets\Scripts\TLE Files\Active.txt" />
+    <None Include="Assets\Scripts\TLE Files\active.txt" />
     <None Include="Assets\Scripts\TLE Files\Visual.txt" />
     <None Include="Assets\Scripts\TLE Files\Weather.txt" />
     <None Include="Assets\Scripts\TLE Files\Orbcomm.txt" />
