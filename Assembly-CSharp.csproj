@@ -63,8 +63,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\CameraFly.cs" />
     <Compile Include="Assets\Scripts\CameraLookAt.cs" />
     <Compile Include="Assets\Scripts\Earth.cs" />
+    <Compile Include="Assets\Scripts\SatManager.cs" />
     <Compile Include="Assets\Scripts\SatScript.cs" />
     <Compile Include="Assets\Scripts\SGP_SDP\OrbitTools\Core\Coord.cs" />
     <Compile Include="Assets\Scripts\SGP_SDP\OrbitTools\Core\Eci.cs" />

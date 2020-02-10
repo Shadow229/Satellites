@@ -264,7 +264,9 @@ namespace Zeptomoby.OrbitTools
 
          if (altKm < Globals.Xkmper)
          {
-            throw new DecayException(gmt, Orbit.SatNameLong);
+            Orbit.isError = true;
+            throw new Exception("Satellite Orbit Decayed - removing visualisation");
+              //  throw new DecayException(gmt, Orbit.SatNameLong);
          }
    
          // Velocity

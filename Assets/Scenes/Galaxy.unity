@@ -335,80 +335,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 466885955}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!135 &604116550
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127262597}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 20
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &604116553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127262597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f725d890795a5a148b91f6f989f168ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  listIndex: 15
-  TLEFiles:
-  - Active
-  - Amateur
-  - Analyst
-  - Argos
-  - Augmentation
-  - Beidou
-  - Breeze
-  - CubeSats
-  - Debris
-  - DisasterMonitoring
-  - Education
-  - Engineering
-  - Experimental
-  - Galileo
-  - Geodetic
-  - Geosynchronous
-  - GlobalStar
-  - GOES
-  - Gorizont
-  - GPS
-  - IntelSat
-  - Iridium
-  - IridiumNext
-  - Military
-  - Molniya
-  - Navy
-  - NOAA
-  - Operational
-  - Orbcomm
-  - Other
-  - Planet
-  - Radar
-  - Raduga
-  - RecentLaunch
-  - ResourceMonitoring
-  - RussianLEO
-  - SARSAT
-  - SatNOGS
-  - Science
-  - SES
-  - Spire
-  - StarLink
-  - Stations
-  - TDRSS
-  - Visual
-  - Weather
-  FetchNewFiles: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -511,6 +437,7 @@ GameObject:
   - component: {fileID: 1444246543}
   - component: {fileID: 1444246542}
   - component: {fileID: 1444246541}
+  - component: {fileID: 1444246544}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -583,7 +510,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 20.317001, y: -86.16901, z: 0}
---- !u!1 &1981862477
+--- !u!114 &1444246544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444246540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6af202d3c9ca69141b6cdbddb921952f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraRotationSpeed: 90
+  climbSpeed: 4
+  normalMoveSpeed: 1
+  slowMoveFactor: 0.25
+  fastMoveFactor: 3
+  pickSceneViewCam: 0
+  sceneCamRotation: {x: 32.693977, y: 241.68723, z: 359.9182}
+  sceneCamPosition: {x: 0.48744857, y: 0.38823122, z: 0.37208962}
+--- !u!1 &1968489050
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -591,45 +538,59 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1981862481}
-  - component: {fileID: 1981862480}
-  - component: {fileID: 1981862479}
-  - component: {fileID: 1981862478}
+  - component: {fileID: 1968489054}
+  - component: {fileID: 1968489053}
+  - component: {fileID: 1968489052}
+  - component: {fileID: 1968489051}
   m_Layer: 0
-  m_Name: Earth
+  m_Name: SatelliteManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1981862478
+--- !u!114 &1968489051
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981862477}
+  m_GameObject: {fileID: 1968489050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43fab8d929f9baf4da2275810cb32d67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Satellites: []
+  ExecutionChunkSize: 100
+--- !u!114 &1968489052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968489050}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e230f54fa99a538419f37aa8555cb71e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SatLoadoutAmount: 5
+  SatLoadoutAmount: -1
   SatellitePrefab: {fileID: 1412742708598286, guid: 347040970b496ba4086308c48e34652b,
     type: 3}
---- !u!114 &1981862479
+--- !u!114 &1968489053
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1981862477}
+  m_GameObject: {fileID: 1968489050}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f725d890795a5a148b91f6f989f168ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  listIndex: 23
+  listIndex: 0
   TLEFiles:
   - Active
   - Amateur
@@ -678,6 +639,37 @@ MonoBehaviour:
   - Visual
   - Weather
   FetchNewFiles: 0
+--- !u!4 &1968489054
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968489050}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.395819, y: 1.5514609, z: 0.968173}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1981862477
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1981862481}
+  - component: {fileID: 1981862480}
+  m_Layer: 0
+  m_Name: Earth
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!114 &1981862480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720,161 +712,5 @@ Transform:
   m_Children:
   - {fileID: 466885956}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2120622997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127262597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34c20de9ecc8bde41b5ed3a66a8071a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationTime: 86400
-  ScaleAmount: 0
-  Scale: 0
-  realTime: 0
-  GMT:
-    Year: 2020
-    Month: 1
-    Day: 1
-    Hours: 1
-    Mins: 1
-    Seconds: 1
-  SetGMTNow: 0
-  Play: 1
-  SpeedMultiplier: -209
-  remainingTime: 86400
-  clockwise: 1
-  directionChangeSpeed: 2
---- !u!1 &2127196265
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2127528157}
-  - component: {fileID: 2130428585}
-  - component: {fileID: 2129482359}
-  m_Layer: 0
-  m_Name: Planet16128Tris
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &2127262597
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2127558173}
-  - component: {fileID: 604116550}
-  - component: {fileID: 2120622997}
-  - component: {fileID: 604116553}
-  - component: {fileID: 2127262598}
-  m_Layer: 0
-  m_Name: Earth
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &2127262598
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127262597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e230f54fa99a538419f37aa8555cb71e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SatLoadoutAmount: -1
-  SatellitePrefab: {fileID: 1412742708598286, guid: 347040970b496ba4086308c48e34652b,
-    type: 3}
---- !u!4 &2127528157
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127196265}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2127558173}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &2127558173
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127262597}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_Children:
-  - {fileID: 2127528157}
-  m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: -9.2, y: 0, z: 9.8}
---- !u!23 &2129482359
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127196265}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 9129bad9aad7f394aa91b2eb46de21c8, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!33 &2130428585
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2127196265}
-  m_Mesh: {fileID: 4300000, guid: b82e0d2b8cc9ee64cacfa0b6e51ff1a3, type: 3}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

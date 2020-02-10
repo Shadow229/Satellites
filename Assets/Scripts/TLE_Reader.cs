@@ -22,17 +22,17 @@ public class TLE_Reader : MonoBehaviour
 
     public GameObject SatellitePrefab;
 
-    GameObject SatelliteHolder = null;
+    GameObject SatelliteManager = null;
 
     bool forceUpdate = false;
 
     private void Start()
     {
-        SatelliteHolder = GameObject.Find("SatelliteHolder");
+        SatelliteManager = GameObject.Find("SatelliteManager");
 
-        if (SatelliteHolder == null)
+        if (SatelliteManager == null)
         {
-            SatelliteHolder = new GameObject("SatelliteHolder");
+            throw new System.ArgumentException("Parameter cannot be null", "Missing Satellite Manager");
         }
 
         tleFile = GetComponent<TLEFile>();
@@ -65,7 +65,7 @@ public class TLE_Reader : MonoBehaviour
     private void GenerateSatellites()
     {
         //clear current satellites
-        foreach (Transform child in SatelliteHolder.transform)
+        foreach (Transform child in SatelliteManager.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
@@ -85,15 +85,15 @@ public class TLE_Reader : MonoBehaviour
             if (reader.EndOfStream) { break; }
 
             //read TLE lines
-            string tle1 = reader.ReadLine();
-            string tle2 = reader.ReadLine();
-            string tle3 = reader.ReadLine();
+            string tle1 = reader.ReadLine().Trim();
+            string tle2 = reader.ReadLine().Trim();
+            string tle3 = reader.ReadLine().Trim();
 
             //sense check on data reads
             if (tle1 != null && tle2 != null && tle3 != null)
             {
                 //instantiate new satellite prefab
-                GameObject sat = Instantiate(SatellitePrefab, new Vector3(0, 0, 0), Quaternion.identity, SatelliteHolder.transform);
+                GameObject sat = Instantiate(SatellitePrefab, new Vector3(0, 0, 0), Quaternion.identity, SatelliteManager.transform);
                 //name it
                 sat.name = tle1;
 
@@ -108,5 +108,12 @@ public class TLE_Reader : MonoBehaviour
         }
 
         reader.Close();
+
+        //initialise the satellite manager
+        SatelliteManager.GetComponent<SatManager>().Init();
+
     }
+
+
+
 }

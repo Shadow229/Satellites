@@ -6,15 +6,12 @@ using Zeptomoby.OrbitTools;
 
 public class SatScript : MonoBehaviour
 {
-    // Test SGP4
-    public string TLE1 = "ISS(ZARYA)";
-    public string TLE2 = "1 25544U 98067A   20024.22416442 -.00025624  00000-0 -45634-3 0  9999";
-    public string TLE3 = "2 25544  51.6460 345.7248 0006034 189.3781 304.5467 15.49109327209547";
-
+    //Satellite information
+    public string TLE1, TLE2, TLE3;
     public float Lat, Long, Altitude, Azmuth, Elevation, Range;
 
     [SerializeField]
-    private float _rotSpeed, _rotAmt;
+    private float _rotSpeed;
 
     GameObject earth;
     Earth earthScript;
@@ -46,25 +43,29 @@ public class SatScript : MonoBehaviour
         //enable to trail renderer from there
         GetComponent<TrailRenderer>().enabled = true;
         //assign an arbitrary rotation around local up
-        _rotSpeed = UnityEngine.Random.Range(5f, 35f);
-        
+        _rotSpeed = UnityEngine.Random.Range(0.5f, 1.5f);
+
+        //face earth
+        Vector3 direction = (earth.transform.position - transform.position).normalized;
+        transform.up = direction;
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateSatellite()
     {
-        UpdateSatellite();
-    }
 
-
-    void UpdateSatellite()
-    {
+        if (TLE1.Equals("TEPCE"))
+        {
+            int x = 5;
+        }
 
         if (sat != null)
         {        
             //if there is an error with the orbit (ie, the sat is no longer in orbit and the TLE reflects no orbit trajectory)
             if (sat.Orbit.isError)
             {
+                //debug log
+                Debug.Log("Remoted Satellite: " + TLE1.ToString());
                 //delete the prefab
                 GameObject.Destroy(this.gameObject);
                 return;
@@ -85,16 +86,19 @@ public class SatScript : MonoBehaviour
             //update position
             transform.position = position;
 
-            //face earth
-            Vector3 targetDirection = (earth.transform.position - transform.position).normalized;
-            //face earth
 
-            //this just wobbles.. no idea why it wont rotate around its local Y axis..
-            transform.up = targetDirection;
-            //rotate around x
-            _rotAmt = (_rotAmt + (_rotSpeed * Time.deltaTime)) % 360;
-            transform.eulerAngles += transform.up * _rotAmt;
+             //rotate around
+            Quaternion rotationAdd = Quaternion.AngleAxis(_rotSpeed, transform.up);
 
+            //face earth
+            Vector3 direction = earth.transform.position - transform.position;
+            Quaternion toRotation = Quaternion.FromToRotation(transform.up, direction) * transform.rotation;
+
+            //combine rotations
+            Quaternion FinalRot = toRotation * rotationAdd;
+
+            //apply rotation
+            transform.rotation = FinalRot;
 
             UpdateSatMetrics(eciSDP4);
         }
