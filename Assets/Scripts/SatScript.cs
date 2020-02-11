@@ -54,11 +54,6 @@ public class SatScript : MonoBehaviour
     public void UpdateSatellite()
     {
 
-        if (TLE1.Equals("TEPCE"))
-        {
-            int x = 5;
-        }
-
         if (sat != null)
         {        
             //if there is an error with the orbit (ie, the sat is no longer in orbit and the TLE reflects no orbit trajectory)

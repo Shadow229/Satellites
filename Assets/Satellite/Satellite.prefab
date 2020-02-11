@@ -165,7 +165,8 @@ GameObject:
   - component: {fileID: 4874934499113314}
   - component: {fileID: 6429308442698944139}
   - component: {fileID: 6883695321353566001}
-  m_Layer: 0
+  - component: {fileID: 6110337608291136908}
+  m_Layer: 8
   m_Name: Satellite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214,6 +215,7 @@ MonoBehaviour:
   Azmuth: 0
   Elevation: 0
   Range: 0
+  _rotSpeed: 0
 --- !u!96 &6883695321353566001
 TrailRenderer:
   serializedVersion: 2
@@ -318,6 +320,20 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!136 &6110337608291136908
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412742708598286}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 2.78
+  m_Height: 5.67
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1577956311297630
 GameObject:
   m_ObjectHideFlags: 0

@@ -63,11 +63,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Billboard.cs" />
     <Compile Include="Assets\Scripts\CameraFly.cs" />
     <Compile Include="Assets\Scripts\CameraLookAt.cs" />
     <Compile Include="Assets\Scripts\Earth.cs" />
+    <Compile Include="Assets\Scripts\SatChecker.cs" />
     <Compile Include="Assets\Scripts\SatManager.cs" />
     <Compile Include="Assets\Scripts\SatScript.cs" />
+    <Compile Include="Assets\Scripts\SatSelector.cs" />
     <Compile Include="Assets\Scripts\SGP_SDP\OrbitTools\Core\Coord.cs" />
     <Compile Include="Assets\Scripts\SGP_SDP\OrbitTools\Core\Eci.cs" />
     <Compile Include="Assets\Scripts\SGP_SDP\OrbitTools\Core\Globals.cs" />

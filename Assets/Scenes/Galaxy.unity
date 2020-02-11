@@ -438,6 +438,7 @@ GameObject:
   - component: {fileID: 1444246542}
   - component: {fileID: 1444246541}
   - component: {fileID: 1444246544}
+  - component: {fileID: 1444246545}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -528,8 +529,27 @@ MonoBehaviour:
   slowMoveFactor: 0.25
   fastMoveFactor: 3
   pickSceneViewCam: 0
-  sceneCamRotation: {x: 32.693977, y: 241.68723, z: 359.9182}
-  sceneCamPosition: {x: 0.48744857, y: 0.38823122, z: 0.37208962}
+  sceneCamRotation: {x: 14.817617, y: 226.82481, z: 359.89972}
+  sceneCamPosition: {x: 3.4123657, y: 1.3538799, z: 3.1635177}
+--- !u!114 &1444246545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444246540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 855bd7732fdd95f42ad597d2a53a48d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HighlightRingPrefab: {fileID: 290503345958028159, guid: b908c663754622841b6b0edcb3204bc9,
+    type: 3}
+  VisbileSat: {fileID: 0}
+  HighlightRing: {fileID: 0}
+  satLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &1968489050
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,7 +595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e230f54fa99a538419f37aa8555cb71e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SatLoadoutAmount: -1
+  SatLoadoutAmount: 1
   SatellitePrefab: {fileID: 1412742708598286, guid: 347040970b496ba4086308c48e34652b,
     type: 3}
 --- !u!114 &1968489053
