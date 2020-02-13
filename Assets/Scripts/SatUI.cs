@@ -104,6 +104,7 @@ public class SatUI : MonoBehaviour
         //attach the camera to the satellite
         AttachViewCam();
 
+
         //activate UI components
         _infoPanel.SetActive(UIVisible);
         _satVis.SetActive(UIVisible);
@@ -152,7 +153,6 @@ public class SatUI : MonoBehaviour
     private void AttachViewCam()
     {
         SatCam.transform.parent = _activeSatellite.transform;
-
     }
     private void DetachViewCam()
     {

@@ -78,6 +78,7 @@ public class SatChecker : MonoBehaviour
         }
         else
         {
+            HighlightRing.GetComponent<Billboard>().satParent = VisibleSat;
             HighlightRing.transform.position = VisibleSat.transform.position;
         }
 
