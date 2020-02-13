@@ -6,9 +6,19 @@ public class SatChecker : MonoBehaviour
 {
 
     public GameObject HighlightRingPrefab;
-    public GameObject VisbileSat;
-    public GameObject HighlightRing;
-    public LayerMask satLayer;
+    private GameObject VisibleSat;
+    private GameObject HighlightRing;
+    private LayerMask satLayer;
+    public SatUI satUI;
+
+
+    public GameObject GetVisibleSat() { return VisibleSat; }
+
+    private void Start()
+    {
+        //satellite layer is layer 8
+        satLayer = 1 << 8;
+    }
 
     // Update is called once per frame
     void Update()
@@ -26,14 +36,19 @@ public class SatChecker : MonoBehaviour
         {
             Debug.DrawLine(transform.position, hit.point, Color.red);
 
-            if (VisbileSat != hit.transform.gameObject || VisbileSat == null)
+            if (VisibleSat != hit.transform.gameObject || VisibleSat == null)
             {
                 float distance = hit.distance;
-                VisbileSat = hit.transform.gameObject;
+                VisibleSat = hit.transform.gameObject;
                 //Debug.Log("Hit: " + hit.transform.gameObject.GetComponent<SatScript>().TLE1.ToString());
                 //Debug.Log("Hit Distanct: " + distance.ToString());
                 Debug.DrawLine(transform.position, hit.point, Color.cyan);
                 Highlight();
+            }
+            else if (VisibleSat == hit.transform.gameObject)
+            {
+                //update the UI
+                satUI.UpdateUI(VisibleSat);
             }
         }
         else
@@ -42,8 +57,10 @@ public class SatChecker : MonoBehaviour
 
             if (HighlightRing != null)
             {
+                //hide the UI
+                satUI.HideUI();
                 GameObject.Destroy(HighlightRing);
-                VisbileSat = null;
+                VisibleSat = null;
             }
 
         }
@@ -55,13 +72,13 @@ public class SatChecker : MonoBehaviour
         if (HighlightRing == null)
         {
             //instantiate highlight
-            HighlightRing = Instantiate(HighlightRingPrefab, VisbileSat.transform.position, Quaternion.identity);
+            HighlightRing = Instantiate(HighlightRingPrefab, VisibleSat.transform.position, Quaternion.identity);
             HighlightRing.transform.LookAt(Camera.main.transform);
-            HighlightRing.GetComponent<Billboard>().satParent = VisbileSat;
+            HighlightRing.GetComponent<Billboard>().satParent = VisibleSat;
         }
         else
         {
-            HighlightRing.transform.position = VisbileSat.transform.position;
+            HighlightRing.transform.position = VisibleSat.transform.position;
         }
 
     }

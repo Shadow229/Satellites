@@ -126,7 +126,7 @@ public class SatScript : MonoBehaviour
 
         if (Physics.Raycast(downRay, out hit))
         {
-            Altitude = hit.distance;
+            Altitude = hit.distance * earthScript.ScaleAmount;
         }
 
             return alt;

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4029248893787874}
   - component: {fileID: 33731582308257766}
   - component: {fileID: 23943327899518182}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: solar_plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 4956838324547778}
   - component: {fileID: 33704892131865688}
   - component: {fileID: 23409389210958606}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: aluminum2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -345,7 +345,7 @@ GameObject:
   - component: {fileID: 4907759081355014}
   - component: {fileID: 33253082994058466}
   - component: {fileID: 23079352709549476}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: solar_plane1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -422,7 +422,7 @@ GameObject:
   - component: {fileID: 4509361148145454}
   - component: {fileID: 33051399196714026}
   - component: {fileID: 23818969868791978}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: dish_etc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -499,7 +499,7 @@ GameObject:
   - component: {fileID: 4894664100643180}
   - component: {fileID: 33784920321031842}
   - component: {fileID: 23148051150289594}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: aluminum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -576,7 +576,7 @@ GameObject:
   - component: {fileID: 4269143787043550}
   - component: {fileID: 33213666581433950}
   - component: {fileID: 23096765633642294}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: korpus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -653,7 +653,7 @@ GameObject:
   - component: {fileID: 4584980975421802}
   - component: {fileID: 33526043589803646}
   - component: {fileID: 23465514249043536}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ig1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
