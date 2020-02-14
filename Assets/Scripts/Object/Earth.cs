@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using TMPro;
 
 [System.Serializable]
 
@@ -65,6 +66,7 @@ public class Earth : MonoBehaviour {
 
 	[SerializeField]
 	private float remainingTime;
+    private bool showDateTime;
 
 	[HideInInspector]
 	public bool clockwise = true;
@@ -75,6 +77,11 @@ public class Earth : MonoBehaviour {
 
     private float spinSpeed = 10f;
 
+    public GameObject CurrentDtTime;
+
+    public float SpawnElevation = 0.5f;
+
+    public void SetScale(float s) { Scale = s; }
 
     private void Start()
     {
@@ -82,11 +89,13 @@ public class Earth : MonoBehaviour {
         InitEarthPosRot();
         //calculate the rotation amount
         spinSpeed = 360.0f / rotationTime;
+
+        TimeNow = DateTime.Now;
     }
 
     private void FixedUpdate()
-    {
-        TimeNow = DateTime.Now;
+    { 
+        UpdateDatTimeUI();
     }
 
     // Update is called once per frame
@@ -100,6 +109,8 @@ public class Earth : MonoBehaviour {
         {
             UpdateManualRotation();
         }
+
+        transform.position = new Vector3(0f, Scale * 3, 0f);
 	}
 
 
@@ -195,5 +206,42 @@ public class Earth : MonoBehaviour {
         ScaleAmount = _diameter * transform.localScale.x;
     }
 
+
+    public void DateTimeToggle(bool val)
+    {
+        showDateTime = val;
+
+        //if reactivating - reset time
+        if (showDateTime)
+        {
+            CurrentDtTime.SetActive(true);
+            TimeNow = System.DateTime.Now;
+        }
+        else
+        {
+            CurrentDtTime.SetActive(false);
+        }
+    }
+
+    private void UpdateDatTimeUI()
+    {
+
+        if (showDateTime)
+        {
+                int day, month, year, hour, min, sec;
+
+                TimeNow = TimeNow.AddSeconds(Time.deltaTime);
+
+                day = TimeNow.Day;
+                month = TimeNow.Month;
+                year = TimeNow.Year;
+                hour = TimeNow.Hour;
+                min = TimeNow.Minute;
+                sec = TimeNow.Second;
+
+                CurrentDtTime.GetComponent<TextMeshProUGUI>().text = string.Format("{0:D2}/{1:D2}/{2:D4} {3:D2}:{4:D2}:{5:D2}", day, month, year, hour, min, sec);
+        }
+      
+    }
 
 }

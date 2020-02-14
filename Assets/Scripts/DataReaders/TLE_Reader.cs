@@ -15,7 +15,7 @@ public class TLE_Reader : MonoBehaviour
 
     private string CurrentTLEFile = "";
 
-    TLEFile tleFile;
+    public TLEFile tleFile;
 
     [Tooltip("Set to -1 to load entire file")]
     public int SatLoadoutAmount = 5;
@@ -24,9 +24,8 @@ public class TLE_Reader : MonoBehaviour
 
     GameObject SatelliteManager = null;
 
-    bool forceUpdate = false;
 
-    private void Start()
+    private void Awake()
     {
         SatelliteManager = GameObject.Find("SatelliteManager");
 
@@ -38,26 +37,37 @@ public class TLE_Reader : MonoBehaviour
         tleFile = GetComponent<TLEFile>();
     }
 
-    private void Update()
+    //private void Update()
+    //{
+    //    //get the current selected TLE file
+    //    int Index = tleFile.listIndex;
+    //    string TLEFileSelect = tleFile.TLEFiles[Index];
+
+    //    if (TLEFileSelect.CompareTo(CurrentTLEFile) != 0 || forceUpdate)
+    //    {
+    //        forceUpdate = false;
+
+    //        //update the set TLE file
+    //        CurrentTLEFile = TLEFileSelect;
+
+    //        GenerateSatellites();
+    //    }
+    //}
+
+
+    public void UpdateTLEFileSelection()
     {
         //get the current selected TLE file
         int Index = tleFile.listIndex;
         string TLEFileSelect = tleFile.TLEFiles[Index];
 
-        if (TLEFileSelect.CompareTo(CurrentTLEFile) != 0 || forceUpdate)
+        if (TLEFileSelect.CompareTo(CurrentTLEFile) != 0)
         {
-            forceUpdate = false;
-
             //update the set TLE file
             CurrentTLEFile = TLEFileSelect;
 
             GenerateSatellites();
         }
-    }
-
-    private void OnValidate()
-    {
-        forceUpdate = true;
     }
 
 

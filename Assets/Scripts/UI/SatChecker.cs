@@ -17,7 +17,7 @@ public class SatChecker : MonoBehaviour
     private void Start()
     {
         //satellite layer is layer 8
-        satLayer = 1 << 8;
+        satLayer = LayerMask.GetMask("Satellite");
     }
 
     // Update is called once per frame
@@ -32,7 +32,7 @@ public class SatChecker : MonoBehaviour
         Ray checkRay = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         RaycastHit hit;
 
-        if (Physics.Raycast(checkRay, out hit, satLayer))
+        if (Physics.Raycast(checkRay, out hit, Mathf.Infinity, satLayer))
         {
             Debug.DrawLine(transform.position, hit.point, Color.red);
 
@@ -83,4 +83,6 @@ public class SatChecker : MonoBehaviour
         }
 
     }
+
+
 }

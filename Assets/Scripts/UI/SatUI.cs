@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class SatUI : MonoBehaviour
 {
@@ -47,6 +48,13 @@ public class SatUI : MonoBehaviour
         //on click
         if (Input.GetMouseButtonDown(0))
         {
+            //ignore if over UI
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
+
             if (UIVisible)
             {
                 HideUI();
@@ -59,11 +67,24 @@ public class SatUI : MonoBehaviour
     }
 
 
+    private void SwitchSat(GameObject Satellite)
+    {
+        if (UIVisible && Satellite != _activeSatellite)
+        {
+            //set our active satellite
+            _activeSatellite = Satellite;
+            //attach the camera to the satellite
+            AttachViewCam();
+        }
+    }
+
     //call to update all UI values and visibility
     public void UpdateUI(GameObject Satellite)
     {
         //check UI visibility
         UIVisibility(Satellite);
+        //check for a live switch
+        SwitchSat(Satellite);
 
         //if UI is open, update the values
         if (UIVisible)
@@ -139,14 +160,26 @@ public class SatUI : MonoBehaviour
 
     private void SetUIValues()
     {
+        //check camera parented correctly
+        if (SatCam.transform.parent == null)
+        {
+            AttachViewCam();
+        }
+
+        //get script
         SatScript satScript = _activeSatellite.GetComponent<SatScript>();
 
-        TMP_SatName.text = satScript.TLE1.ToString();
-        TMP_ID.text = satScript.TLE2.Split(' ')[1].Trim();
-        TMP_Altitude.text = satScript.Altitude.ToString("n2") + "  km";
-        TMP_Azimuth.text = satScript.Azmuth.ToString("n2");
-        TMP_Elevation.text = satScript.Elevation.ToString("n2");
-        TMP_Range.text = satScript.Range.ToString("n2") + " km";
+        //sense check
+        if (satScript)
+        {
+            //assign values
+            TMP_SatName.text = satScript.TLE1.ToString();
+            TMP_ID.text = satScript.TLE2.Split(' ')[1].Trim();
+            TMP_Altitude.text = satScript.Altitude.ToString("n2") + "  km";
+            TMP_Azimuth.text = satScript.Azmuth.ToString("n2");
+            TMP_Elevation.text = satScript.Elevation.ToString("n2");
+            TMP_Range.text = satScript.Range.ToString("n2") + " km";
+        }
     }
 
 

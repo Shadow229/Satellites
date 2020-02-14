@@ -30,12 +30,18 @@ public class SatManager : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        //no update with no satellites
+        if (Satellites.Count == 0)
+        {
+            return;
+        }
+
         //loop through satellites and update in chunks
         for (int i = 0; i < ExecutionChunkSize; i++)
         {
             int ittrVal = i + (ExecutionChunkSize * (CurrentChunk - 1));
             //exit early if we're out of sats
-            if (ittrVal >= Satellites.Count || Satellites.Count == 0)
+            if (ittrVal >= Satellites.Count)
             {
                 break;
             }
@@ -60,8 +66,6 @@ public class SatManager : MonoBehaviour
 
             //run the update
             satScript.UpdateSatellite();
-
-
         }
 
         //increment current chunk for next frame
