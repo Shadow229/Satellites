@@ -60,7 +60,7 @@ public class SatScript : MonoBehaviour
             if (sat.Orbit.isError)
             {
                 //debug log
-                Debug.Log("Remoted Satellite: " + TLE1.ToString());
+                Debug.Log("Removed Satellite: " + TLE1.ToString());
                 //delete the prefab
                 GameObject.Destroy(this.gameObject);
                 return;
@@ -75,11 +75,11 @@ public class SatScript : MonoBehaviour
             //flip position values to orientate satelite to earth object
             Vector3 position = new Vector3((float)eciSDP4.Position.X, (float)eciSDP4.Position.Z, (float)eciSDP4.Position.Y);
 
-            //scale position vecotor inline with earth scale
-            position /= earthScript.ScaleAmount;
+            //scale position vector inline with earth scale
+            position *= earthScript.GetScale();
 
             //update position
-            transform.position = position;
+            transform.position = position +  new Vector3(0f, earthScript.GetScale() * 3, 0f); ;
 
 
              //rotate around
@@ -126,7 +126,7 @@ public class SatScript : MonoBehaviour
 
         if (Physics.Raycast(downRay, out hit))
         {
-            Altitude = hit.distance * earthScript.ScaleAmount;
+            Altitude = hit.distance;// * earthScript.GetScale();
         }
 
             return alt;

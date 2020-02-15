@@ -38,19 +38,19 @@ public class DtTime
 /// </summary>
 public class Earth : MonoBehaviour {
 
+    //constants
+
+    //earth is 12742km
+    private const float _diameter = 12742;
+    //86400 seconds in a day
+	private const float rotationTime = 86400;
+
     [HideInInspector]
     public DateTime TimeNow;
-
-    //[Tooltip("Time in seconds for earth to rotate once")]
-    [HideInInspector]
-	public float rotationTime = 86400;
-
-    //earth is 12742km - we need it about 0.4 unity units for AR.
-    private readonly float _diameter = 12742;
-    [HideInInspector]
-    public float ScaleAmount;
+ //   [HideInInspector]
+   // public float ScaleAmount;
     [SerializeField]
-    private float Scale = 0.4f;
+    private float _scale = 0.4f;
 
 	public bool realTime = true;
 	public DtTime GMT;
@@ -75,13 +75,15 @@ public class Earth : MonoBehaviour {
 
     Quaternion AxisTilt;
 
-    private float spinSpeed = 10f;
+    private float spinSpeed;
 
     public GameObject CurrentDtTime;
 
-    public float SpawnElevation = 0.5f;
 
-    public void SetScale(float s) { Scale = s; }
+    //helper functions
+    public void SetScale(float s) { _scale = s; }
+    public float GetScale() { return _scale; }
+
 
     private void Start()
     {
@@ -95,7 +97,7 @@ public class Earth : MonoBehaviour {
 
     private void FixedUpdate()
     { 
-        UpdateDatTimeUI();
+        UpdateDateTimeUI();
     }
 
     // Update is called once per frame
@@ -109,9 +111,34 @@ public class Earth : MonoBehaviour {
         {
             UpdateManualRotation();
         }
-
-        transform.position = new Vector3(0f, Scale * 3, 0f);
 	}
+
+
+
+    private void UpdateAutoRotation()
+    {
+        //set remaining time
+        remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
+
+        //rotate earth
+        transform.Rotate(transform.up, spinSpeed * Time.deltaTime);
+    }
+
+
+
+
+    void InitEarthPosRot()
+    {
+        //if its switched to realtime - reinitialise the correct rotation of the earth
+        if (realTime)
+        {
+            remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
+
+            float distDeg = spinSpeed * remainingTime;
+
+            transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
+        }
+    }
 
 
     private void UpdateManualRotation()
@@ -125,7 +152,7 @@ public class Earth : MonoBehaviour {
         {
             throw;
         }
-        
+
         //update remaining time
         remainingTime = rotationTime - TimeinSeconds(GMT.Hours, GMT.Mins, GMT.Seconds);
 
@@ -148,62 +175,22 @@ public class Earth : MonoBehaviour {
                 DeltaAcc -= (int)DeltaAcc;
             }
         }
-
-    }
-
-    private void UpdateAutoRotation()
-    {
-        //set remaining time
-        remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
-
-        //rotate earth
-        transform.Rotate(transform.up, spinSpeed * Time.deltaTime);
     }
 
 
-	int TimeinSeconds(int h, int m, int s)
-	{
-		int t;
-
-		t = (h * 60 * 60) + (m * 60) + s;
-
-		return t;
-	}
-
-    void InitEarthPosRot()
+    public void UpdateScale(float a_scale)
     {
-        //if its switched to realtime - reinitialise the correct rotation of the earth
-        if (realTime)
-        {
-            remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
+        //set scale
+        _scale = a_scale;
 
-            float distDeg = spinSpeed * remainingTime;
-
-            transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
-        }
-    }
-
-
-    private void OnValidate()
-    {
-        InitEarthPosRot();
-        UpdateScale();
-
-        if (SetGMTNow)
-        {
-            GMT.SetDateTime(TimeNow);
-            SetGMTNow = false;
-        }
-    }
-
-
-    private void UpdateScale()
-    {
         //set uniform scale
-        transform.localScale = new Vector3(Scale, Scale, Scale);
+        transform.localScale = new Vector3(_scale, _scale, _scale);
 
         //update global scale amount (used for satelite positioning)
-        ScaleAmount = _diameter * transform.localScale.x;
+     //   ScaleAmount = _diameter * _scale;
+
+        //raise position to accomodate scaled objects
+       // transform.position = new Vector3(0f, _scale * 3, 0f);
     }
 
 
@@ -223,13 +210,14 @@ public class Earth : MonoBehaviour {
         }
     }
 
-    private void UpdateDatTimeUI()
+    private void UpdateDateTimeUI()
     {
 
         if (showDateTime)
         {
                 int day, month, year, hour, min, sec;
 
+                //update of delta time to save querying to CPU time each frame
                 TimeNow = TimeNow.AddSeconds(Time.deltaTime);
 
                 day = TimeNow.Day;
@@ -239,9 +227,21 @@ public class Earth : MonoBehaviour {
                 min = TimeNow.Minute;
                 sec = TimeNow.Second;
 
+                //format and print
                 CurrentDtTime.GetComponent<TextMeshProUGUI>().text = string.Format("{0:D2}/{1:D2}/{2:D4} {3:D2}:{4:D2}:{5:D2}", day, month, year, hour, min, sec);
         }
       
+    }
+
+
+
+    int TimeinSeconds(int h, int m, int s)
+    {
+        int t;
+
+        t = (h * 60 * 60) + (m * 60) + s;
+
+        return t;
     }
 
 }

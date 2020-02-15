@@ -113,6 +113,7 @@
     <Compile Include="Assets\Scripts\DataReaders\SGP_SDP\OrbitToolsDemo\Main.cs" />
     <Compile Include="Assets\Scripts\DataReaders\TLE_Reader.cs" />
     <Compile Include="Assets\Scripts\DataReaders\TLEFile.cs" />
+    <Compile Include="Assets\Scripts\DataReaders\WebGetTLEData.cs" />
     <Compile Include="Assets\Scripts\Object\Earth.cs" />
     <Compile Include="Assets\Scripts\Object\SatManager.cs" />
     <Compile Include="Assets\Scripts\Object\SatScript.cs" />

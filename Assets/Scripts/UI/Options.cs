@@ -12,6 +12,8 @@ public class Options : MonoBehaviour
     private float menuspeed = 1f;
     private GameObject optionScreen;
 
+    private bool _TrailRenderEnabled = false;
+
 
     private void Start()
     {
@@ -46,6 +48,9 @@ public class Options : MonoBehaviour
 
         //close the options menu
         CloseOptions();
+
+        //turn trails back on if off
+        SwitchTrailRenderers(true);
     }
 
     public void OpenOptions()
@@ -58,6 +63,8 @@ public class Options : MonoBehaviour
     {
         LeanTween.scaleX(optionScreen, 0f, menuspeed).setEase(LeanTweenType.easeInOutElastic);
         StartCoroutine(DisableMenu());
+        //turn trails back on if off
+        SwitchTrailRenderers(true);
     }
 
     IEnumerator DisableMenu()
@@ -71,7 +78,27 @@ public class Options : MonoBehaviour
 
     public void UpdateScale(float a_scale)
     {
-        GameObject.Find("Earth").GetComponent<Earth>().SetScale(a_scale);
+        GameObject.Find("Earth").GetComponent<Earth>().UpdateScale(a_scale);
+
+        SwitchTrailRenderers(false);
     }
 
+
+
+    private void SwitchTrailRenderers(bool val)
+    {
+        if (_TrailRenderEnabled != val)
+        {
+            _TrailRenderEnabled = val;
+
+            GameObject satMan = GameObject.Find("SatelliteManager");
+
+            foreach (Transform sat in satMan.transform)
+            {
+                sat.gameObject.GetComponent<TrailRenderer>().Clear();
+                sat.gameObject.GetComponent<TrailRenderer>().enabled = val;
+            }
+        }
+       
+    }
 }
