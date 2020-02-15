@@ -11,6 +11,7 @@ public class SatChecker : MonoBehaviour
     private LayerMask satLayer;
     public SatUI satUI;
 
+    private bool HighlightVisibile = false;
 
     public GameObject GetVisibleSat() { return VisibleSat; }
 
@@ -18,6 +19,13 @@ public class SatChecker : MonoBehaviour
     {
         //satellite layer is layer 8
         satLayer = LayerMask.GetMask("Satellite");
+
+        //instantiate highlight
+        HighlightRing = Instantiate(HighlightRingPrefab, Vector3.zero, Quaternion.identity);
+        float initScale = GameObject.Find("Earth").GetComponent<Earth>().GetScale();
+        SetHightlightRingScale(initScale * 0.5f);
+        HighlightVisibile = false;
+        HighlightRing.SetActive(false);
     }
 
     // Update is called once per frame
@@ -26,6 +34,10 @@ public class SatChecker : MonoBehaviour
         CheckForSat();
     }
 
+    public void SetHightlightRingScale(float scale)
+    {
+        HighlightRing.transform.localScale = new Vector3(scale, scale, scale);
+    }
 
     private void CheckForSat()
     {
@@ -55,11 +67,12 @@ public class SatChecker : MonoBehaviour
         {
             Debug.DrawRay(transform.position, checkRay.direction, Color.blue);
 
-            if (HighlightRing != null)
+            if (HighlightVisibile == true)
             {
+                HighlightVisibile = false;
                 //hide the UI
                 satUI.HideUI();
-                GameObject.Destroy(HighlightRing);
+                HighlightRing.SetActive(false) ;
                 VisibleSat = null;
             }
 
@@ -69,20 +82,9 @@ public class SatChecker : MonoBehaviour
 
     private void Highlight()
     {
-        if (HighlightRing == null)
-        {
-            //instantiate highlight
-            HighlightRing = Instantiate(HighlightRingPrefab, VisibleSat.transform.position, Quaternion.identity);
-            HighlightRing.transform.LookAt(Camera.main.transform);
-            HighlightRing.GetComponent<Billboard>().satParent = VisibleSat;
-        }
-        else
-        {
-            HighlightRing.GetComponent<Billboard>().satParent = VisibleSat;
-            HighlightRing.transform.position = VisibleSat.transform.position;
-        }
-
+        HighlightRing.GetComponent<Billboard>().satParent = VisibleSat;
+        HighlightRing.transform.position = VisibleSat.transform.position;
+        HighlightVisibile = true;
+        HighlightRing.SetActive(true);
     }
-
-
 }

@@ -10,6 +10,7 @@ public class Options : MonoBehaviour
     public TLEFile tleFile;
 
     public TMP_Dropdown satLoadout;
+    public TMP_Dropdown satIndividual;
 
     private readonly float menuspeed = 1f;
     private GameObject optionScreen;
@@ -26,6 +27,9 @@ public class Options : MonoBehaviour
 
         getFileModDate();
 
+        //update staellite selection dropdown to reflect the TLE file selected
+        satIndividual.AddOptions(tle_reader.GenerateSatNames(tleFile.TrackedTLEFiles[0]));
+
     }
 
     public void getFileModDate()
@@ -40,18 +44,22 @@ public class Options : MonoBehaviour
     }
 
 
-
-
     void PopulateDropdowns()
     {
         satLoadout.AddOptions(tleFile.TrackedTLEFiles);
     }
     
 
-    public void satLoadoutChange(int tle_index)
+    //called from changing the dropdown satellite loadout in options menu
+    public void SatLoadoutChange(int tle_index)
     {
         //register the index on value change
         tleFile.listIndex = tle_index;
+
+        //clear individual sat selection
+       // satIndividual.ClearOptions();
+        //update staellite selection dropdown to reflect the TLE file selected
+       //satIndividual.AddOptions(tle_reader.GenerateSatNames(tleFile.TrackedTLEFiles[tle_index]));
 
     }
 
@@ -94,7 +102,10 @@ public class Options : MonoBehaviour
 
     public void UpdateScale(float a_scale)
     {
+        //scale earth
         GameObject.Find("Earth").GetComponent<Earth>().UpdateScale(a_scale);
+        //scale highlight ring
+        Camera.main.GetComponent<SatChecker>().SetHightlightRingScale(a_scale * 0.5f);
 
         SwitchTrailRenderers(false);
     }
@@ -125,4 +136,14 @@ public class Options : MonoBehaviour
 
         tleFile.GetNewFiles();
     }
+
+
+    public void UpdateGPS()
+    {
+        GPS gps = new GPS();
+
+        StartCoroutine(gps.GetGPSFromDevice());
+    }
+
+
 }

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zeptomoby.OrbitTools;
 
+
+
+
 public class SatScript : MonoBehaviour
 {
     //Satellite information
@@ -15,6 +18,8 @@ public class SatScript : MonoBehaviour
 
     GameObject earth;
     Earth earthScript;
+    SatManager satManager;
+
 
     Satellite sat;
 
@@ -24,12 +29,13 @@ public class SatScript : MonoBehaviour
     {
         earth = GameObject.Find("Earth");
         earthScript = earth.GetComponent<Earth>();
+        satManager = GameObject.Find("SatelliteManager").GetComponent<SatManager>();
 
         // generate TLE object
-        Tle tle1 = new Tle(TLE1, TLE2, TLE3);
+        Tle tle = new Tle(TLE1, TLE2, TLE3);
 
         // Create an orbit object using the SDP4/SGP4 TLE object.
-        sat = new Satellite(tle1);
+        sat = new Satellite(tle);
 
         //initialise sat
         Init();
@@ -76,13 +82,21 @@ public class SatScript : MonoBehaviour
             Vector3 position = new Vector3((float)eciSDP4.Position.X, (float)eciSDP4.Position.Z, (float)eciSDP4.Position.Y);
 
             //scale position vector inline with earth scale
-            position *= earthScript.GetScale();
+            position /= earthScript.ScaleAmount;
+
+            //get scale
+            float scale = earthScript.GetScale();
 
             //update position
-            transform.position = position +  new Vector3(0f, earthScript.GetScale() * 3, 0f); ;
+            transform.position = position +  new Vector3(0f, scale * 3, 0f); ;
 
+            //trim it for local scale (this is due to the models being scaled differently at creation)
+            scale /= 200;
 
-             //rotate around
+            //update scale
+            transform.localScale = new Vector3(scale, scale, scale);
+
+            //rotate around
             Quaternion rotationAdd = Quaternion.AngleAxis(_rotSpeed, transform.up);
 
             //face earth
@@ -101,10 +115,22 @@ public class SatScript : MonoBehaviour
 
     void UpdateSatMetrics(EciTime eciSDP4)
     {
-        Site cheltenham = new Site(51.9, -2.0834, 0);
+
+        Site site;
+
+        if (satManager.userLocInfo.Set == false)
+        {
+            //cheltenham default if no location is set via GPS
+            site = new Site(51.9, -2.0834, 0);
+        }
+        else
+        {
+            site = new Site(satManager.userLocInfo.Latitude, satManager.userLocInfo.Longitude, satManager.userLocInfo.Altitude);
+        }
+
 
         // Now get the "look angle" from the site to the satellite. 
-        Topo topoLook = cheltenham.GetLookAngle(eciSDP4);
+        Topo topoLook = site.GetLookAngle(eciSDP4);
 
         //update some metrics for the satellite for info
         Azmuth = (float)topoLook.AzimuthDeg;
@@ -126,11 +152,13 @@ public class SatScript : MonoBehaviour
 
         if (Physics.Raycast(downRay, out hit))
         {
-            Altitude = hit.distance;// * earthScript.GetScale();
+            Altitude = hit.distance * earthScript.ScaleAmount;
         }
 
             return alt;
     }
+
+
 
 }
 

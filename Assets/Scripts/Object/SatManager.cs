@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SatManager : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class SatManager : MonoBehaviour
     private int ExecutionChunkSize = 50;
     private int CurrentChunk;
     private int MaxChunks;
+
+    public UserLocationInfo userLocInfo;
+    public TextMeshProUGUI GPS;
 
 
     public void Init()
@@ -70,5 +74,16 @@ public class SatManager : MonoBehaviour
 
         //increment current chunk for next frame
         CurrentChunk = (CurrentChunk % MaxChunks) + 1;    
+    }
+
+
+    public void SetUserLocationInfo(float lat, float lng, float alt)
+    {
+        userLocInfo.Latitude = lat;
+        userLocInfo.Longitude = lng;
+        userLocInfo.Altitude = alt;
+        userLocInfo.Set = true;
+
+        GPS.text = string.Format("Current: Lat({0:D2}) | Long({1:D2}) | Alt({2:D2})", lat, lng, alt);
     }
 }

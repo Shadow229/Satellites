@@ -10,6 +10,8 @@ public class SatUI : MonoBehaviour
 
     public GameObject SatName, ID, Altitude, Azimuth, Elevation, Range;
     public Camera SatCam;
+    public float FOVDiv = 50000f;
+    private float _satCamFOV;
 
     private TextMeshProUGUI TMP_SatName, TMP_ID, TMP_Altitude, TMP_Azimuth, TMP_Elevation, TMP_Range;
 
@@ -179,6 +181,8 @@ public class SatUI : MonoBehaviour
             TMP_Azimuth.text = satScript.Azmuth.ToString("n2");
             TMP_Elevation.text = satScript.Elevation.ToString("n2");
             TMP_Range.text = satScript.Range.ToString("n2") + " km";
+
+            _satCamFOV = Mathf.Clamp(FOVDiv / satScript.Altitude, 1, 60);
         }
     }
 
@@ -198,6 +202,7 @@ public class SatUI : MonoBehaviour
         {
             SatCam.transform.localPosition = Vector3.zero;
             SatCam.transform.LookAt(_earth.transform);
+            SatCam.fieldOfView = _satCamFOV;
         }
     }
 }

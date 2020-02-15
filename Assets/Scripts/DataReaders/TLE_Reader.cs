@@ -37,23 +37,6 @@ public class TLE_Reader : MonoBehaviour
         tleFile = GetComponent<TLEFile>();
     }
 
-    //private void Update()
-    //{
-    //    //get the current selected TLE file
-    //    int Index = tleFile.listIndex;
-    //    string TLEFileSelect = tleFile.TLEFiles[Index];
-
-    //    if (TLEFileSelect.CompareTo(CurrentTLEFile) != 0 || forceUpdate)
-    //    {
-    //        forceUpdate = false;
-
-    //        //update the set TLE file
-    //        CurrentTLEFile = TLEFileSelect;
-
-    //        GenerateSatellites();
-    //    }
-    //}
-
 
     public void UpdateTLEFileSelection()
     {
@@ -124,6 +107,39 @@ public class TLE_Reader : MonoBehaviour
 
     }
 
+    public List<string> GenerateSatNames(string TLEFile)
+    {
+        List<string> SatNames = new List<string>();
 
+        //add an 'all' option
+        SatNames.Add("All");
+
+        //read TLE data in
+        string Filepath = Application.dataPath + "/Scripts/TLE Files/" + TLEFile + ".txt";
+
+        SourceFile = new FileInfo(Filepath);
+        reader = SourceFile.OpenText();
+
+        //add all other sats from the files
+        while (!reader.EndOfStream)
+        {
+            //read TLE lines
+            string satname = reader.ReadLine().Trim();
+
+            //skip down next 2 lines
+            reader.ReadLine();
+            reader.ReadLine();
+
+            //sense check on data reads
+            if (satname != null)
+            {
+                SatNames.Add(satname);
+            }
+        }
+
+        reader.Close();
+
+        return SatNames;
+    }
 
 }

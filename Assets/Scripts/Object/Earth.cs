@@ -48,9 +48,9 @@ public class Earth : MonoBehaviour {
     [HideInInspector]
     public DateTime TimeNow;
  //   [HideInInspector]
-   // public float ScaleAmount;
+    public float ScaleAmount;
     [SerializeField]
-    private float _scale = 0.4f;
+    private float _scale = 1f;
 
 	public bool realTime = true;
 	public DtTime GMT;
@@ -66,7 +66,7 @@ public class Earth : MonoBehaviour {
 
 	[SerializeField]
 	private float remainingTime;
-    private bool showDateTime;
+    private bool showDateTime = true;
 
 	[HideInInspector]
 	public bool clockwise = true;
@@ -91,6 +91,8 @@ public class Earth : MonoBehaviour {
         InitEarthPosRot();
         //calculate the rotation amount
         spinSpeed = 360.0f / rotationTime;
+        //set the scale
+        UpdateScale(_scale);
 
         TimeNow = DateTime.Now;
     }
@@ -187,10 +189,10 @@ public class Earth : MonoBehaviour {
         transform.localScale = new Vector3(_scale, _scale, _scale);
 
         //update global scale amount (used for satelite positioning)
-     //   ScaleAmount = _diameter * _scale;
+        ScaleAmount = _diameter / _scale;
 
         //raise position to accomodate scaled objects
-       // transform.position = new Vector3(0f, _scale * 3, 0f);
+        transform.position = new Vector3(0f, _scale * 3, 0f);
     }
 
 
