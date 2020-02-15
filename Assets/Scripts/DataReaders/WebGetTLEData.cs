@@ -6,19 +6,14 @@ using UnityEngine.Networking;
 public class WebGetTLEData
 {
 
+    //NORAD WEBSITE
     private string baseURL = "https://www.celestrak.com/NORAD/elements/";
 
-    public void FetchTLEData(List<string> satPackages)
+
+    //pick up tracked TLE files from the NORAD website
+    public IEnumerator GetFile(string file_name)
     {
-
-        string url = baseURL + "";
-
-        GetFile(url);
-    }
-
-    IEnumerator GetFile(string file_name)
-    {
-        string url = "https://files.rcsb.org/download/" + file_name + ".pdb";
+        string url = baseURL + file_name + ".txt";
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             yield return www.SendWebRequest();
@@ -28,9 +23,15 @@ public class WebGetTLEData
             }
             else
             {
-                string savePath = string.Format("{0}/{1}.txt", Application.persistentDataPath, file_name);
+                string savePath = string.Format("{0}/{1}.txt", Application.dataPath + "/Scripts/TLE Files", file_name);
                 System.IO.File.WriteAllText(savePath, www.downloadHandler.text);
             }
+        }
+
+        //update last read on active list
+        if (file_name.Contains("Active"))
+        {
+            GameObject.Find("OptionsManager").GetComponent<Options>().getFileModDate();
         }
     }
 }

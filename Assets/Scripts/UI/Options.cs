@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.IO;
 
 public class Options : MonoBehaviour
 {
     public TLE_Reader tle_reader;
+    public TLEFile tleFile;
 
     public TMP_Dropdown satLoadout;
 
-    private float menuspeed = 1f;
+    private readonly float menuspeed = 1f;
     private GameObject optionScreen;
+
+    public TextMeshProUGUI LastFetched;
 
     private bool _TrailRenderEnabled = false;
 
@@ -19,23 +23,35 @@ public class Options : MonoBehaviour
     {
         PopulateDropdowns();
         optionScreen = transform.GetChild(0).gameObject;
+
+        getFileModDate();
+
     }
 
-    //change tlelistfile index based on selection
+    public void getFileModDate()
+    {
+        string savePath = string.Format("{0}/{1}.txt", Application.dataPath + "/Scripts/TLE Files", "Active");
+        System.DateTime mod = File.GetLastWriteTime(savePath);
+
+        string lf = string.Format("{0:D2}/{1:D2}/{2:D4}", mod.Day, mod.Month, mod.Year);
+
+        LastFetched.text = "Last Fetched " + lf;
+
+    }
 
 
 
 
     void PopulateDropdowns()
     {
-        satLoadout.AddOptions(tle_reader.tleFile.TLEFiles);
+        satLoadout.AddOptions(tleFile.TrackedTLEFiles);
     }
     
 
     public void satLoadoutChange(int tle_index)
     {
         //register the index on value change
-        tle_reader.tleFile.listIndex = tle_index;
+        tleFile.listIndex = tle_index;
 
     }
 
@@ -100,5 +116,13 @@ public class Options : MonoBehaviour
             }
         }
        
+    }
+
+
+    public void FetchNewTLE()
+    {
+        LastFetched.text = "Updating TLE Data...";
+
+        tleFile.GetNewFiles();
     }
 }

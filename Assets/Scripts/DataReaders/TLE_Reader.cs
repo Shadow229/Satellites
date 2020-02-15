@@ -15,7 +15,7 @@ public class TLE_Reader : MonoBehaviour
 
     private string CurrentTLEFile = "";
 
-    public TLEFile tleFile;
+    private TLEFile tleFile;
 
     [Tooltip("Set to -1 to load entire file")]
     public int SatLoadoutAmount = 5;
@@ -59,7 +59,7 @@ public class TLE_Reader : MonoBehaviour
     {
         //get the current selected TLE file
         int Index = tleFile.listIndex;
-        string TLEFileSelect = tleFile.TLEFiles[Index];
+        string TLEFileSelect = tleFile.TrackedTLEFiles[Index];
 
         if (TLEFileSelect.CompareTo(CurrentTLEFile) != 0)
         {
