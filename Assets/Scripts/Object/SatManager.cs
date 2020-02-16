@@ -15,6 +15,8 @@ public class SatManager : MonoBehaviour
     public UserLocationInfo userLocInfo;
     public TextMeshProUGUI GPS;
 
+    //public Camera SatCam;
+
 
     public void Init()
     {

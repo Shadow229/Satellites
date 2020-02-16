@@ -191,7 +191,7 @@ public class SatUI : MonoBehaviour
     {
         SatCam.transform.parent = _activeSatellite.transform;
     }
-    private void DetachViewCam()
+    public void DetachViewCam()
     {
         SatCam.transform.parent = null;
     }

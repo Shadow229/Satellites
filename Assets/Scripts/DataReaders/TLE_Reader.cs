@@ -24,6 +24,9 @@ public class TLE_Reader : MonoBehaviour
 
     GameObject SatelliteManager = null;
 
+    private string CurrentSat = "";
+    private string SelectedSat = "";
+
 
     private void Awake()
     {
@@ -44,15 +47,17 @@ public class TLE_Reader : MonoBehaviour
         int Index = tleFile.listIndex;
         string TLEFileSelect = tleFile.TrackedTLEFiles[Index];
 
-        if (TLEFileSelect.CompareTo(CurrentTLEFile) != 0)
+        if (TLEFileSelect.CompareTo(CurrentTLEFile) != 0 || SelectedSat.CompareTo(CurrentSat) != 0)
         {
             //update the set TLE file
             CurrentTLEFile = TLEFileSelect;
+            //update the set selected sat
+            CurrentSat = SelectedSat;
 
+            //generate sats
             GenerateSatellites();
         }
     }
-
 
     //generates satellites from new TLE file
     private void GenerateSatellites()
@@ -60,6 +65,7 @@ public class TLE_Reader : MonoBehaviour
         //clear current satellites
         foreach (Transform child in SatelliteManager.transform)
         {
+            //delete the sat
             GameObject.Destroy(child.gameObject);
         }
 
@@ -85,18 +91,20 @@ public class TLE_Reader : MonoBehaviour
             //sense check on data reads
             if (tle1 != null && tle2 != null && tle3 != null)
             {
-                //instantiate new satellite prefab
-                GameObject sat = Instantiate(SatellitePrefab, new Vector3(0, 0, 0), Quaternion.identity, SatelliteManager.transform);
-                //name it
-                sat.name = tle1;
+                if (SelectedSat == "" || SelectedSat.CompareTo(tle1) == 0)
+                {
+                    //instantiate new satellite prefab
+                    GameObject sat = Instantiate(SatellitePrefab, new Vector3(0, 0, 0), Quaternion.identity, SatelliteManager.transform);
+                    //name it
+                    sat.name = tle1;
 
-                //update TLE information
-                SatScript ss = sat.GetComponent<SatScript>();
+                    //update TLE information
+                    SatScript ss = sat.GetComponent<SatScript>();
 
-                ss.TLE1 = tle1;
-                ss.TLE2 = tle2;
-                ss.TLE3 = tle3;
-
+                    ss.TLE1 = tle1;
+                    ss.TLE2 = tle2;
+                    ss.TLE3 = tle3;
+                }
             }
         }
 
@@ -110,9 +118,6 @@ public class TLE_Reader : MonoBehaviour
     public List<string> GenerateSatNames(string TLEFile)
     {
         List<string> SatNames = new List<string>();
-
-        //add an 'all' option
-        SatNames.Add("All");
 
         //read TLE data in
         string Filepath = Application.dataPath + "/Scripts/TLE Files/" + TLEFile + ".txt";
@@ -140,6 +145,12 @@ public class TLE_Reader : MonoBehaviour
         reader.Close();
 
         return SatNames;
+    }
+
+
+    public void SelectSatellite(string sat)
+    {
+        SelectedSat = sat;
     }
 
 }

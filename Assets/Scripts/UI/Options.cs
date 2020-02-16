@@ -11,11 +11,13 @@ public class Options : MonoBehaviour
 
     public TMP_Dropdown satLoadout;
     public TMP_Dropdown satIndividual;
+    public SatSearch satSearch;
 
     private readonly float menuspeed = 1f;
     private GameObject optionScreen;
 
     public TextMeshProUGUI LastFetched;
+    public SatUI satUI;
 
     private bool _TrailRenderEnabled = false;
 
@@ -26,10 +28,6 @@ public class Options : MonoBehaviour
         optionScreen = transform.GetChild(0).gameObject;
 
         getFileModDate();
-
-        //update staellite selection dropdown to reflect the TLE file selected
-        satIndividual.AddOptions(tle_reader.GenerateSatNames(tleFile.TrackedTLEFiles[0]));
-
     }
 
     public void getFileModDate()
@@ -56,10 +54,14 @@ public class Options : MonoBehaviour
         //register the index on value change
         tleFile.listIndex = tle_index;
 
+        //There are just too many satellites for unity's UI to cope with all sats in a dropdown. Put on hold for now
         //clear individual sat selection
-       // satIndividual.ClearOptions();
+        //satIndividual.ClearOptions();
         //update staellite selection dropdown to reflect the TLE file selected
-       //satIndividual.AddOptions(tle_reader.GenerateSatNames(tleFile.TrackedTLEFiles[tle_index]));
+        //satIndividual.AddOptions(tle_reader.GenerateSatNames(tleFile.TrackedTLEFiles[tle_index]));
+
+        //run the update on the sat search incase the sat doesnt exist in the new TLE
+        satSearch.GetAvailableSats(satSearch.InputField.text);
 
     }
 
@@ -78,7 +80,10 @@ public class Options : MonoBehaviour
     }
 
     public void OpenOptions()
-    {
+    {    
+        //close satview UI
+        satUI.HideUI();
+
         optionScreen.SetActive(true);
         LeanTween.scaleX(optionScreen, 3.9f, menuspeed).setEase(LeanTweenType.easeInOutElastic);
     }
