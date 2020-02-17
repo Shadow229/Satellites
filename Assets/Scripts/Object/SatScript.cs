@@ -160,5 +160,21 @@ public class SatScript : MonoBehaviour
 
 
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag.Equals("MainCamera"))
+        {
+            GetComponent<AudioSource>().Play();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag.Equals("MainCamera"))
+        {
+            GetComponent<AudioSource>().Stop();
+        }
+    }
+
 }
 

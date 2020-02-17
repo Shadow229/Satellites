@@ -20,6 +20,7 @@ public class Options : MonoBehaviour
     public SatUI satUI;
 
     private bool _TrailRenderEnabled = false;
+    private bool _OptionsOpen = false;
 
 
     private void Start()
@@ -80,9 +81,22 @@ public class Options : MonoBehaviour
     }
 
     public void OpenOptions()
-    {    
+    {
+        //dont run if menu is already open
+        if (_OptionsOpen) {return;}
+
+        _OptionsOpen = true;
+
         //close satview UI
         satUI.HideUI();
+
+        //play sound
+        AudioSource audio = GetComponent<AudioSource>();
+        if (!audio.isPlaying)
+        {
+            audio.clip = satUI.menuIn;
+            audio.Play();
+        }
 
         optionScreen.SetActive(true);
         LeanTween.scaleX(optionScreen, 3.9f, menuspeed).setEase(LeanTweenType.easeInOutElastic);
@@ -90,6 +104,17 @@ public class Options : MonoBehaviour
 
     public void CloseOptions()
     {
+        _OptionsOpen = false;
+
+        //play sound
+        AudioSource audio = GetComponent<AudioSource>();
+        if (!audio.isPlaying)
+        {
+            audio.clip = satUI.menuOut;
+            audio.Play();
+        }
+
+
         LeanTween.scaleX(optionScreen, 0f, menuspeed).setEase(LeanTweenType.easeInOutElastic);
         StartCoroutine(DisableMenu());
         //turn trails back on if off

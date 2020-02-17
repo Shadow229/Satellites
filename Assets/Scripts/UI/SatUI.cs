@@ -21,6 +21,8 @@ public class SatUI : MonoBehaviour
     private GameObject _earth;
     private GameObject _activeSatellite;
 
+    public AudioClip menuIn, menuOut;
+
     private void Start()
     {
         //get objects
@@ -109,13 +111,25 @@ public class SatUI : MonoBehaviour
     //hid ethe UI from screen
     public void HideUI()
     {
-        SetDefaultUIValues();
+        if (UIVisible)
+        {
+            SetDefaultUIValues();
 
-        UIVisible = false;
+            UIVisible = false;
 
-        LeanTween.scaleY(_infoPanel, 0f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
-        LeanTween.scaleX(_satVis, 0f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
-        StartCoroutine(HideUITimed());
+            //play sound
+            AudioSource audio = GetComponent<AudioSource>();
+            if (!audio.isPlaying)
+            {
+                audio.clip = menuOut;
+                audio.Play();
+            }
+
+            LeanTween.scaleY(_infoPanel, 0f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
+            LeanTween.scaleX(_satVis, 0f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
+            StartCoroutine(HideUITimed());
+        }
+       
     }
 
     private void ShowUI(GameObject Satellite)
@@ -131,6 +145,14 @@ public class SatUI : MonoBehaviour
         //activate UI components
         _infoPanel.SetActive(UIVisible);
         _satVis.SetActive(UIVisible);
+
+        //play sound
+        AudioSource audio = GetComponent<AudioSource>();
+        if (!audio.isPlaying)
+        {
+            audio.clip = menuIn;
+            audio.Play();
+        }
 
         //animation on screen
         LeanTween.scaleY(_infoPanel, 3.1f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
