@@ -70,7 +70,7 @@ public class TLE_Reader : MonoBehaviour
         }
 
         //read TLE data in
-        string Filepath = Application.dataPath + "/Scripts/TLE Files/" + CurrentTLEFile.ToString() + ".txt";
+        string Filepath = Application.persistentDataPath + "/TLE Files/" + CurrentTLEFile.ToString() + ".txt";
 
         SourceFile = new FileInfo(Filepath);
         reader = SourceFile.OpenText();
@@ -120,7 +120,7 @@ public class TLE_Reader : MonoBehaviour
         List<string> SatNames = new List<string>();
 
         //read TLE data in
-        string Filepath = Application.dataPath + "/Scripts/TLE Files/" + TLEFile + ".txt";
+        string Filepath = Application.persistentDataPath + "/TLE Files/" + TLEFile + ".txt";
 
         SourceFile = new FileInfo(Filepath);
         reader = SourceFile.OpenText();

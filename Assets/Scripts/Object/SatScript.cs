@@ -73,7 +73,7 @@ public class SatScript : MonoBehaviour
             }
 
             //get date time value
-            DateTime dt = earthScript.realTime ? earthScript.TimeNow : earthScript.dtGMT;
+            DateTime dt = earthScript.TimeNow;
 
             //get the position at time after epoch
             EciTime eciSDP4 = sat.PositionEci(dt);
@@ -87,8 +87,8 @@ public class SatScript : MonoBehaviour
             //get scale
             float scale = earthScript.GetScale();
 
-            //update position
-            transform.position = position +  new Vector3(0f, scale * 3, 0f); ;
+            //add earth offset from AR placement
+            transform.position = position +  earth.transform.position; ;
 
             //trim it for local scale (this is due to the models being scaled differently at creation)
             scale /= 200;

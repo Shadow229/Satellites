@@ -22,6 +22,8 @@ public class GPS
         if (!Input.location.isEnabledByUser)
             yield break;
 
+        Debug.Log("Starting location services");
+
         // Start service before querying location
         Input.location.Start();
 
@@ -57,6 +59,8 @@ public class GPS
 
             GameObject.Find("SatelliteManager").GetComponent<SatManager>().SetUserLocationInfo(Latitude, Longitude, Altitude);
         }
+
+        Debug.Log("Stopping location services");
 
         // Stop service if there is no need to query location updates continuously
         Input.location.Stop();

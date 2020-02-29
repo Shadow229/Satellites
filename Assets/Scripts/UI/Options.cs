@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.IO;
+using UnityEngine.UI;
 
 public class Options : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class Options : MonoBehaviour
     private bool _OptionsOpen = false;
 
 
+
     private void Start()
     {
         PopulateDropdowns();
@@ -33,10 +35,12 @@ public class Options : MonoBehaviour
 
     public void getFileModDate()
     {
-        string savePath = string.Format("{0}/{1}.txt", Application.dataPath + "/Scripts/TLE Files", "Active");
+        Debug.Log("Getting file mod date");
+
+        string savePath = string.Format("{0}/{1}.txt", Application.persistentDataPath + "/TLE Files", "Active");
         System.DateTime mod = File.GetLastWriteTime(savePath);
 
-        string lf = string.Format("{0:D2}/{1:D2}/{2:D4}", mod.Day, mod.Month, mod.Year);
+        string lf = string.Format("{0:00}/{1:00}/{2:0000}", mod.Day, mod.Month, mod.Year);
 
         LastFetched.text = "Last Fetched " + lf;
 
@@ -85,6 +89,9 @@ public class Options : MonoBehaviour
         //dont run if menu is already open
         if (_OptionsOpen) {return;}
 
+        //hide crosshair
+        GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
+
         _OptionsOpen = true;
 
         //close satview UI
@@ -100,6 +107,7 @@ public class Options : MonoBehaviour
 
         optionScreen.SetActive(true);
         LeanTween.scaleX(optionScreen, 3.9f, menuspeed).setEase(LeanTweenType.easeInOutElastic);
+
     }
 
     public void CloseOptions()
@@ -119,6 +127,9 @@ public class Options : MonoBehaviour
         StartCoroutine(DisableMenu());
         //turn trails back on if off
         SwitchTrailRenderers(true);
+
+        //show crosshair
+        GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
     }
 
     IEnumerator DisableMenu()
@@ -152,8 +163,10 @@ public class Options : MonoBehaviour
 
             foreach (Transform sat in satMan.transform)
             {
-                sat.gameObject.GetComponent<TrailRenderer>().Clear();
-                sat.gameObject.GetComponent<TrailRenderer>().enabled = val;
+                TrailRenderer tr = sat.gameObject.GetComponent<TrailRenderer>();
+               tr.Clear();
+               tr.enabled = val;
+               tr.Clear();
             }
         }
        
@@ -176,4 +189,9 @@ public class Options : MonoBehaviour
     }
 
 
+
+    public void ShowDateTime(bool show)
+    {
+        GameObject.Find("Earth").GetComponent<Earth>().DateTimeToggle(show);
+    }
 }

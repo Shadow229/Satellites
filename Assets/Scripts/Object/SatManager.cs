@@ -86,6 +86,6 @@ public class SatManager : MonoBehaviour
         userLocInfo.Altitude = alt;
         userLocInfo.Set = true;
 
-        GPS.text = string.Format("Current: Lat({0:D2}) | Long({1:D2}) | Alt({2:D2})", lat, lng, alt);
+        GPS.text = string.Format("Current: Lat({0:0.00}) | Long({1:0.00}) | Alt({2:0.00})", lat, lng, alt);
     }
 }

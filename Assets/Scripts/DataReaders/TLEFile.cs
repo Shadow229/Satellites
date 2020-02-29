@@ -15,12 +15,25 @@ public class TLEFile : MonoBehaviour
 
     public void GetNewFiles()
     {
+        //checking directory
+        Debug.Log("Checking Persistent Data Directory");
+        if (!Directory.Exists(Application.persistentDataPath + "/TLE Files"))
+        {
+            Debug.Log("Creating Directory...");
+            Directory.CreateDirectory(Application.persistentDataPath + "/TLE Files");
+        }
+        else
+        {
+            Debug.Log("Director Exists!");
+        }
+
+        Debug.Log("Getting new TLE Files");
+
         WebGetTLEData WebGet = new WebGetTLEData();
 
         foreach(string TLEFile in TrackedTLEFiles)
         {
             StartCoroutine(WebGet.GetFile(TLEFile));
         }
-
     }
 }

@@ -2,35 +2,9 @@
 using System.Collections;
 using System;
 using TMPro;
+using UnityEngine.UI;
 
 [System.Serializable]
-
-//change some of this for datetime functions - it'll handle the speed multipliers better and save on manual calcs and the try catch with out of date month params!
-public class DtTime
-{
-	public int	Year,
-				Month,
-				Day,
-				Hours,
-				Mins,	
-				Seconds;
-
-    public DtTime() {}
-    public DtTime(DateTime DtTime)
-    {
-        SetDateTime(DtTime);
-    }
-
-    public void SetDateTime(DateTime DtTime)
-    {
-        Year = DtTime.Year;
-        Month = DtTime.Month;
-        Day = DtTime.Day;
-        Hours = DtTime.Hour;
-        Mins = DtTime.Minute;
-        Seconds = DtTime.Second;
-    }
-}
 
 
 /// <summary>
@@ -47,37 +21,24 @@ public class Earth : MonoBehaviour {
 
     [HideInInspector]
     public DateTime TimeNow;
- //   [HideInInspector]
+    [HideInInspector]
     public float ScaleAmount;
     [SerializeField]
     private float _scale = 1f;
-
-	public bool realTime = true;
-	public DtTime GMT;
-    public bool SetGMTNow = true;
-    public bool Play = false;
-    [Range(-2000,2000)]
-    public int SpeedMultiplier = 1;
-
-    private float DeltaAcc = 0.0f;
 
 	[HideInInspector]
 	public DateTime dtGMT;
 
 	[SerializeField]
 	private float remainingTime;
-    private bool showDateTime = true;
-
-	[HideInInspector]
-	public bool clockwise = true;
-	[HideInInspector]
-	public float directionChangeSpeed = 2f;
+    public bool UpdateDateTime = true;
 
     Quaternion AxisTilt;
 
-    private float spinSpeed;
+    private float _spinSpeed;
+    private bool _showDateTime;
 
-    public GameObject CurrentDtTime;
+    private GameObject CurrentDtTime;
 
 
     //helper functions
@@ -87,14 +48,25 @@ public class Earth : MonoBehaviour {
 
     private void Start()
     {
+        Debug.Log("Earth has been set - initialising! ...");
+
         AxisTilt = Quaternion.Euler(-0.29f, -37.65f, 0.4f);
         InitEarthPosRot();
         //calculate the rotation amount
-        spinSpeed = 360.0f / rotationTime;
+        _spinSpeed = 360.0f / rotationTime;
         //set the scale
         UpdateScale(_scale);
 
         TimeNow = DateTime.Now;
+
+        CurrentDtTime = GameObject.Find("CurrentDtTime");
+
+        //initialise sat checker on camera
+        Camera.main.GetComponent<SatChecker>().Init();
+
+        //show crosshair
+        GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
+
     }
 
     private void FixedUpdate()
@@ -104,17 +76,9 @@ public class Earth : MonoBehaviour {
 
     // Update is called once per frame
     void Update()
-    {
-        if (realTime)
-        {
-            UpdateAutoRotation();
-        }
-        else
-        {
-            UpdateManualRotation();
-        }
+    { 
+        UpdateAutoRotation();
 	}
-
 
 
     private void UpdateAutoRotation()
@@ -123,60 +87,19 @@ public class Earth : MonoBehaviour {
         remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
 
         //rotate earth
-        transform.Rotate(transform.up, spinSpeed * Time.deltaTime);
+        transform.Rotate(transform.up, _spinSpeed * Time.deltaTime);
     }
-
-
 
 
     void InitEarthPosRot()
     {
         //if its switched to realtime - reinitialise the correct rotation of the earth
-        if (realTime)
-        {
-            remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
+        remainingTime = rotationTime - TimeinSeconds(TimeNow.Hour, TimeNow.Minute, TimeNow.Second);
 
-            float distDeg = spinSpeed * remainingTime;
+        float distDeg = _spinSpeed * remainingTime;
 
-            transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
-        }
-    }
-
-
-    private void UpdateManualRotation()
-    {
-        //set manual time
-        try
-        {
-            dtGMT = new DateTime(GMT.Year, GMT.Month, GMT.Day, GMT.Hours, GMT.Mins, GMT.Seconds);
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            throw;
-        }
-
-        //update remaining time
-        remainingTime = rotationTime - TimeinSeconds(GMT.Hours, GMT.Mins, GMT.Seconds);
-
-        //get rotation amount
-        float distDeg = spinSpeed * remainingTime;
-
-        //rotate earth
         transform.rotation = AxisTilt * Quaternion.AngleAxis(distDeg, Vector3.up);
 
-        //if play is selected, resume from date set
-        if (Play)
-        {
-            //acrue delta time
-            DeltaAcc += Time.deltaTime * SpeedMultiplier;
-
-            if (Math.Abs((DeltaAcc)) >= 1)
-            {
-                //add complete seconds onto the GMT
-                GMT.Seconds += (int)DeltaAcc;
-                DeltaAcc -= (int)DeltaAcc;
-            }
-        }
     }
 
 
@@ -192,16 +115,16 @@ public class Earth : MonoBehaviour {
         ScaleAmount = _diameter / _scale;
 
         //raise position to accomodate scaled objects
-        transform.position = new Vector3(0f, _scale * 3, 0f);
+        transform.position = new Vector3(transform.position.x, _scale * 0.5f, transform.position.z);
     }
 
 
     public void DateTimeToggle(bool val)
     {
-        showDateTime = val;
+        _showDateTime = val;
 
         //if reactivating - reset time
-        if (showDateTime)
+        if (_showDateTime)
         {
             CurrentDtTime.SetActive(true);
             TimeNow = System.DateTime.Now;
@@ -214,8 +137,7 @@ public class Earth : MonoBehaviour {
 
     private void UpdateDateTimeUI()
     {
-
-        if (showDateTime)
+        if (_showDateTime)
         {
                 int day, month, year, hour, min, sec;
 
@@ -230,7 +152,7 @@ public class Earth : MonoBehaviour {
                 sec = TimeNow.Second;
 
                 //format and print
-                CurrentDtTime.GetComponent<TextMeshProUGUI>().text = string.Format("{0:D2}/{1:D2}/{2:D4} {3:D2}:{4:D2}:{5:D2}", day, month, year, hour, min, sec);
+                CurrentDtTime.GetComponent<TextMeshProUGUI>().text = string.Format("{0:00}/{1:00}/{2:0000} {3:00}:{4:00}:{5:00}", day, month, year, hour, min, sec);
         }
       
     }

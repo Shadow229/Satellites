@@ -13,6 +13,8 @@ public class WebGetTLEData
     //pick up tracked TLE files from the NORAD website
     public IEnumerator GetFile(string file_name)
     {
+        Debug.Log("Attempting file get: " + file_name);
+
         string url = baseURL + file_name + ".txt";
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
@@ -23,7 +25,7 @@ public class WebGetTLEData
             }
             else
             {
-                string savePath = string.Format("{0}/{1}.txt", Application.dataPath + "/Scripts/TLE Files", file_name);
+                string savePath = string.Format("{0}/{1}.txt", Application.persistentDataPath + "/TLE Files", file_name);
                 System.IO.File.WriteAllText(savePath, www.downloadHandler.text);
             }
         }

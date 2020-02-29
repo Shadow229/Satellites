@@ -10,12 +10,13 @@ public class SatChecker : MonoBehaviour
     private GameObject HighlightRing;
     private LayerMask satLayer;
     public SatUI satUI;
+    private bool _initialised = false;
 
     private bool HighlightVisibile = false;
 
     public GameObject GetVisibleSat() { return VisibleSat; }
 
-    private void Start()
+    public void Init()
     {
         //satellite layer is layer 8
         satLayer = LayerMask.GetMask("Satellite");
@@ -26,12 +27,18 @@ public class SatChecker : MonoBehaviour
         SetHightlightRingScale(initScale * 0.5f);
         HighlightVisibile = false;
         HighlightRing.SetActive(false);
+
+        _initialised = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckForSat();
+        if (_initialised)
+        {
+            CheckForSat();
+        }
+
     }
 
     public void SetHightlightRingScale(float scale)

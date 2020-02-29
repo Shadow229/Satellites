@@ -44,13 +44,7 @@ public class SatUI : MonoBehaviour
     {
         //update touch when changed to ios
         //// Handle screen touches.
-        //if (Input.touchCount > 0)
-        //{
-        //    //the screen has been touched - show the
-        //}
-
-        //on click
-        if (Input.GetMouseButtonDown(0))
+        if (Input.touchCount > 0)
         {
             //ignore if over UI
             if (EventSystem.current.IsPointerOverGameObject())
