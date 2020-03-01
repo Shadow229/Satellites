@@ -23,7 +23,7 @@ public class Options : MonoBehaviour
     private bool _TrailRenderEnabled = false;
     private bool _OptionsOpen = false;
 
-
+    public bool IsOptionsOpen() { return _OptionsOpen; }
 
     private void Start()
     {
@@ -81,18 +81,17 @@ public class Options : MonoBehaviour
         CloseOptions();
 
         //turn trails back on if off
-        SwitchTrailRenderers(true);
+        EnableTrailRenders(true);
     }
 
     public void OpenOptions()
     {
         //dont run if menu is already open
         if (_OptionsOpen) {return;}
+        _OptionsOpen = true;
 
         //hide crosshair
         GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
-
-        _OptionsOpen = true;
 
         //close satview UI
         satUI.HideUI();
@@ -126,7 +125,7 @@ public class Options : MonoBehaviour
         LeanTween.scaleX(optionScreen, 0f, menuspeed).setEase(LeanTweenType.easeInOutElastic);
         StartCoroutine(DisableMenu());
         //turn trails back on if off
-        SwitchTrailRenderers(true);
+        EnableTrailRenders(true);
 
         //show crosshair
         GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
@@ -137,7 +136,6 @@ public class Options : MonoBehaviour
         yield return new WaitForSeconds(menuspeed);
 
         optionScreen.SetActive(false);
-
     }
 
 
@@ -147,31 +145,45 @@ public class Options : MonoBehaviour
         GameObject.Find("Earth").GetComponent<Earth>().UpdateScale(a_scale);
         //scale highlight ring
         Camera.main.GetComponent<SatChecker>().SetHightlightRingScale(a_scale * 0.5f);
-
-        SwitchTrailRenderers(false);
+        //scale the trail renderers
+        ScaleTrailRenderers(a_scale);
+        //disable all trail renders entirely
+        EnableTrailRenders(false);
     }
 
 
 
-    private void SwitchTrailRenderers(bool val)
+    public void EnableTrailRenders(bool val)
     {
         if (_TrailRenderEnabled != val)
         {
             _TrailRenderEnabled = val;
 
-            GameObject satMan = GameObject.Find("SatelliteManager");
+            SatManager satMan = GameObject.Find("SatelliteManager").GetComponent<SatManager>();
 
-            foreach (Transform sat in satMan.transform)
+            foreach (GameObject sat in satMan.Satellites)
             {
-                TrailRenderer tr = sat.gameObject.GetComponent<TrailRenderer>();
-               tr.Clear();
-               tr.enabled = val;
-               tr.Clear();
+                TrailRenderer tr = sat.GetComponent<TrailRenderer>();
+                tr.Clear();
+                tr.enabled = val;
+                tr.Clear();
             }
-        }
-       
+         }
     }
 
+
+    private void ScaleTrailRenderers(float a_scale)
+    {
+        SatManager satMan = GameObject.Find("SatelliteManager").GetComponent< SatManager>();
+
+        foreach (GameObject sat in satMan.Satellites)
+        {
+            TrailRenderer tr = sat.GetComponent<TrailRenderer>();
+            tr.startWidth = a_scale / 200;
+        }
+
+        Debug.Log("DEBUG: Trail Scale is: " + (a_scale / 200).ToString("n4"));
+    }
 
     public void FetchNewTLE()
     {

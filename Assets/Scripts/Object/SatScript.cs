@@ -15,6 +15,7 @@ public class SatScript : MonoBehaviour
 
     [SerializeField]
     private float _rotSpeed;
+    private TrailRenderer _tr;
 
     GameObject earth;
     Earth earthScript;
@@ -24,12 +25,13 @@ public class SatScript : MonoBehaviour
     Satellite sat;
 
 
-    // Start is called before the first frame update
+    // Start called on instantiate
     void Start()
     {
         earth = GameObject.Find("Earth");
         earthScript = earth.GetComponent<Earth>();
         satManager = GameObject.Find("SatelliteManager").GetComponent<SatManager>();
+        _tr = GetComponent<TrailRenderer>();
 
         // generate TLE object
         Tle tle = new Tle(TLE1, TLE2, TLE3);
@@ -47,7 +49,7 @@ public class SatScript : MonoBehaviour
         //update our satellites position on instantiation
         UpdateSatellite();
         //enable to trail renderer from there
-        GetComponent<TrailRenderer>().enabled = true;
+        _tr.enabled = true;
         //assign an arbitrary rotation around local up
         _rotSpeed = UnityEngine.Random.Range(0.5f, 1.5f);
 
@@ -81,8 +83,12 @@ public class SatScript : MonoBehaviour
             //flip position values to orientate satelite to earth object
             Vector3 position = new Vector3((float)eciSDP4.Position.X, (float)eciSDP4.Position.Z, (float)eciSDP4.Position.Y);
 
+            Debug.Log("Updating Satellite: " + TLE1.ToString() + " | Position: " + position.ToString("n4"));
+
             //scale position vector inline with earth scale
             position /= earthScript.ScaleAmount;
+
+            Debug.Log("Updating Satellite: " + TLE1.ToString() + " | Scaled Position: " + position.ToString("n4"));
 
             //get scale
             float scale = earthScript.GetScale();
@@ -90,11 +96,16 @@ public class SatScript : MonoBehaviour
             //add earth offset from AR placement
             transform.position = position +  earth.transform.position; ;
 
+            Debug.Log("Updating Satellite: " + TLE1.ToString() + " | Final Position: " + transform.position.ToString("n4"));
+            Debug.Log("Updating Satellite: " + TLE1.ToString() + " | Earth Scale: " + scale.ToString("n4"));
+
             //trim it for local scale (this is due to the models being scaled differently at creation)
-            scale /= 200;
+            scale /= 100;
 
             //update scale
             transform.localScale = new Vector3(scale, scale, scale);
+
+            Debug.Log("Updating Satellite: " + TLE1.ToString() + " | Local Scale: " + scale.ToString("n4"));
 
             //rotate around
             Quaternion rotationAdd = Quaternion.AngleAxis(_rotSpeed, transform.up);
@@ -110,6 +121,8 @@ public class SatScript : MonoBehaviour
             transform.rotation = FinalRot;
 
             UpdateSatMetrics(eciSDP4);
+
+            Debug.Log("Updating Satellite: " + TLE1.ToString() + " | Position: " + transform.position.ToString() + " | Scale: " + transform.localScale.ToString());
         }
     }
 
@@ -164,6 +177,7 @@ public class SatScript : MonoBehaviour
     {
         if (other.tag.Equals("MainCamera"))
         {
+            Debug.Log("DEBUG: Hit camera - playing sound");
             GetComponent<AudioSource>().Play();
         }
     }
@@ -172,6 +186,7 @@ public class SatScript : MonoBehaviour
     {
         if (other.tag.Equals("MainCamera"))
         {
+            Debug.Log("DEBUG: Hit ended - stop playing sound");
             GetComponent<AudioSource>().Stop();
         }
     }

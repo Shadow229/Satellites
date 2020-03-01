@@ -17,9 +17,6 @@ public class TLE_Reader : MonoBehaviour
 
     private TLEFile tleFile;
 
-    [Tooltip("Set to -1 to load entire file")]
-    public int SatLoadoutAmount = 5;
-
     public GameObject SatellitePrefab;
 
     GameObject SatelliteManager = null;
@@ -63,11 +60,7 @@ public class TLE_Reader : MonoBehaviour
     private void GenerateSatellites()
     {
         //clear current satellites
-        foreach (Transform child in SatelliteManager.transform)
-        {
-            //delete the sat
-            GameObject.Destroy(child.gameObject);
-        }
+        SatelliteManager.GetComponent<SatManager>().ClearAllSatellites();
 
         //read TLE data in
         string Filepath = Application.persistentDataPath + "/TLE Files/" + CurrentTLEFile.ToString() + ".txt";
@@ -76,7 +69,7 @@ public class TLE_Reader : MonoBehaviour
         reader = SourceFile.OpenText();
 
         //loop through txt file - limit the loads here
-        int ittr = SatLoadoutAmount == -1 ? int.MaxValue : SatLoadoutAmount;
+        int ittr = int.MaxValue;
 
         for (int i = 0; i < ittr; i++)
         {
@@ -93,6 +86,7 @@ public class TLE_Reader : MonoBehaviour
             {
                 if (SelectedSat == "" || SelectedSat.CompareTo(tle1) == 0)
                 {
+                    Debug.Log("DEBUG: Instantiating new sat: " + tle1.ToString());
                     //instantiate new satellite prefab
                     GameObject sat = Instantiate(SatellitePrefab, new Vector3(0, 0, 0), Quaternion.identity, SatelliteManager.transform);
                     //name it

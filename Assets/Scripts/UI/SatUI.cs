@@ -20,6 +20,7 @@ public class SatUI : MonoBehaviour
     private GameObject _satVis;
     private GameObject _earth;
     private GameObject _activeSatellite;
+    private Options _options;
 
     public AudioClip menuIn, menuOut;
 
@@ -37,6 +38,8 @@ public class SatUI : MonoBehaviour
         TMP_Azimuth = Azimuth.GetComponent<TextMeshProUGUI>();
         TMP_Elevation = Elevation.GetComponent<TextMeshProUGUI>();
         TMP_Range = Range.GetComponent<TextMeshProUGUI>();
+
+        _options = GameObject.Find("OptionsManager").GetComponent<Options>();
     }
 
     //toggle UI visibility
@@ -44,15 +47,8 @@ public class SatUI : MonoBehaviour
     {
         //update touch when changed to ios
         //// Handle screen touches.
-        if (Input.touchCount > 0)
+        if (Input.touchCount > 0 && _options.IsOptionsOpen() == false)
         {
-            //ignore if over UI
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                return;
-            }
-
-
             if (UIVisible)
             {
                 HideUI();

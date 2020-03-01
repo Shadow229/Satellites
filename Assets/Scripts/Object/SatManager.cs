@@ -88,4 +88,16 @@ public class SatManager : MonoBehaviour
 
         GPS.text = string.Format("Current: Lat({0:0.00}) | Long({1:0.00}) | Alt({2:0.00})", lat, lng, alt);
     }
+
+
+    public void ClearAllSatellites()
+    {
+        foreach (Transform child in transform)
+        {
+            //delete the sat
+            GameObject.Destroy(child.gameObject);
+        }
+        //clear the list
+        Satellites.Clear();
+    }
 }

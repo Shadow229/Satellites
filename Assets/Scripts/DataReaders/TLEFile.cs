@@ -24,7 +24,7 @@ public class TLEFile : MonoBehaviour
         }
         else
         {
-            Debug.Log("Director Exists!");
+            Debug.Log("Directory Exists!");
         }
 
         Debug.Log("Getting new TLE Files");

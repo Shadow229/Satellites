@@ -119,6 +119,7 @@
     <Compile Include="Assets\Scripts\Object\Earth.cs" />
     <Compile Include="Assets\Scripts\Object\SatManager.cs" />
     <Compile Include="Assets\Scripts\Object\SatScript.cs" />
+    <Compile Include="Assets\Scripts\TTS\TTS.cs" />
     <Compile Include="Assets\Scripts\UI\Billboard.cs" />
     <Compile Include="Assets\Scripts\UI\Options.cs" />
     <Compile Include="Assets\Scripts\UI\SatChecker.cs" />

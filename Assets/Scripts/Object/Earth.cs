@@ -24,49 +24,55 @@ public class Earth : MonoBehaviour {
     [HideInInspector]
     public float ScaleAmount;
     [SerializeField]
-    private float _scale = 1f;
+    private float _scale = 0.3f;
+    public float YOrigin;
+    public float HeightMultiplier = 0.3f;
+    public float DefaultHeight = 1;
 
 	[HideInInspector]
 	public DateTime dtGMT;
 
 	[SerializeField]
 	private float remainingTime;
-    public bool UpdateDateTime = true;
+    public bool UpdateDateTime = false;
 
     Quaternion AxisTilt;
 
     private float _spinSpeed;
-    private bool _showDateTime;
+    private bool _showDateTime = true;
 
     private GameObject CurrentDtTime;
-
+    private bool _initialised = false;
 
     //helper functions
     public void SetScale(float s) { _scale = s; }
     public float GetScale() { return _scale; }
 
 
-    private void Start()
+    public void Init()
     {
-        Debug.Log("Earth has been set - initialising! ...");
+        Debug.Log("DEBUG: Earth Init: " + _initialised.ToString());
+        //can potentially be ran multiple times from changing placement of AR position
+        if (!_initialised)
+        {
+            Debug.Log("DEBUG: Initialising Earth!");
 
-        AxisTilt = Quaternion.Euler(-0.29f, -37.65f, 0.4f);
-        InitEarthPosRot();
-        //calculate the rotation amount
-        _spinSpeed = 360.0f / rotationTime;
-        //set the scale
-        UpdateScale(_scale);
+            _initialised = true;
+            AxisTilt = Quaternion.Euler(-0.29f, -37.65f, 0.4f);
+            InitEarthPosRot();
+            //calculate the rotation amount
+            _spinSpeed = 360.0f / rotationTime;
+            //set the scale
+            UpdateScale(_scale);
 
-        TimeNow = DateTime.Now;
+            TimeNow = DateTime.Now;
 
-        CurrentDtTime = GameObject.Find("CurrentDtTime");
+            CurrentDtTime = GameObject.Find("CurrentDtTime");
 
-        //initialise sat checker on camera
-        Camera.main.GetComponent<SatChecker>().Init();
-
-        //show crosshair
-        GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
-
+            //initialise sat checker on camera
+            Camera.main.GetComponent<SatChecker>().Init();
+        }
+        
     }
 
     private void FixedUpdate()
@@ -115,7 +121,7 @@ public class Earth : MonoBehaviour {
         ScaleAmount = _diameter / _scale;
 
         //raise position to accomodate scaled objects
-        transform.position = new Vector3(transform.position.x, _scale * 0.5f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, YOrigin + DefaultHeight + (_scale * HeightMultiplier), transform.position.z);
     }
 
 
@@ -137,7 +143,7 @@ public class Earth : MonoBehaviour {
 
     private void UpdateDateTimeUI()
     {
-        if (_showDateTime)
+        if (_showDateTime && _initialised)
         {
                 int day, month, year, hour, min, sec;
 

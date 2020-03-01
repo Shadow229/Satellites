@@ -6,6 +6,7 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using System;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ARPlacement : MonoBehaviour
 {
@@ -23,8 +24,14 @@ public class ARPlacement : MonoBehaviour
 
         if (arRaycastManager)
         {
-            Debug.Log("RayCastManager is not null");
+            Debug.Log("DEBUG: RayCastManager is not null");
         }
+
+        //make sure the crosshair is hidden
+        GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
+
+        //get GPS Location
+        GameObject.Find("OptionsManager").GetComponent<Options>().UpdateGPS();
     }
 
     // Update is called once per frame
@@ -38,12 +45,14 @@ public class ARPlacement : MonoBehaviour
             //when the user touches the screen place earth
             if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && !IsPointerOverUIObject())
             {
-                Debug.Log("placement pose is valid");
+                Debug.Log("DEBUG: placement pose is valid");
 
+                //show earth
                 PlaceObject();
 
                 //Hide indicator
                 PlacementIndicator.SetActive(false);
+
                 //hide cloud points
                 ARPointCloudManager pointCloudManager = FindObjectOfType<ARSessionOrigin>().GetComponent<ARPointCloudManager>();
                 pointCloudManager.enabled = false;
@@ -51,9 +60,15 @@ public class ARPlacement : MonoBehaviour
                 {
                     pointCloud.gameObject.SetActive(false);
                 }
+
                 //stop update
                 EarthSet = true;
 
+                //make sure the crosshair is not hidden
+                GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
+
+                //turn on trail renders after the satellites have had time to reposition
+                StartCoroutine(TurnOnTrailRenders());
             }
         }
         else
@@ -69,6 +84,11 @@ public class ARPlacement : MonoBehaviour
                 {
                     pointCloud.gameObject.SetActive(true);
                 }
+                //make sure the crosshair is hidden
+                GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
+
+                //turn off the trail renderes
+                GameObject.Find("OptionsManager").GetComponent<Options>().EnableTrailRenders(false);
             }
         }
         
@@ -76,8 +96,18 @@ public class ARPlacement : MonoBehaviour
 
     private void PlaceObject()
     {
+        Earth earth = Earth.GetComponent<Earth>();
+        //set the earth origin
+        earth.YOrigin = placementPose.position.y;
+        //initialise
+        earth.Init();
         //place
-        Earth.transform.position = new Vector3(placementPose.position.x, Earth.transform.position.y, placementPose.position.z);
+        Debug.Log("DEBUG: YOrigin is: " + earth.YOrigin.ToString());
+        Debug.Log("DEBUG: The scale is: " + earth.GetScale().ToString());
+        Debug.Log("DEBUG: The multiplier is: " + earth.HeightMultiplier.ToString());
+        Debug.Log("DEBUG: Setting earth " + (earth.GetScale() * earth.HeightMultiplier).ToString() + " high.");
+
+        Earth.transform.position = new Vector3(placementPose.position.x, placementPose.position.y + earth.DefaultHeight + (earth.GetScale() * earth.HeightMultiplier), placementPose.position.z);
         //show mesh
         Earth.transform.GetChild(0).gameObject.SetActive(true);
     }
@@ -103,6 +133,9 @@ public class ARPlacement : MonoBehaviour
 
     private void UpdatePlacementIndicator()
     {
+        float currentScale = Earth.GetComponent<Earth>().GetScale();
+        PlacementIndicator.transform.localScale = new Vector3(currentScale, currentScale, currentScale);
+
         if (placementPoseIsValid)
         {
             PlacementIndicator.SetActive(true);
@@ -124,5 +157,12 @@ public class ARPlacement : MonoBehaviour
         }
         return false;
 
+    }
+
+    private IEnumerator TurnOnTrailRenders()
+    {
+        yield return new WaitForSeconds(2);
+
+        GameObject.Find("OptionsManager").GetComponent<Options>().EnableTrailRenders(true);
     }
 }
