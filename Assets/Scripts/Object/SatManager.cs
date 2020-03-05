@@ -13,9 +13,6 @@ public class SatManager : MonoBehaviour
     private int MaxChunks;
 
     public UserLocationInfo userLocInfo;
-    public TextMeshProUGUI GPS;
-
-    //public Camera SatCam;
 
 
     public void Init()
@@ -85,8 +82,6 @@ public class SatManager : MonoBehaviour
         userLocInfo.Longitude = lng;
         userLocInfo.Altitude = alt;
         userLocInfo.Set = true;
-
-        GPS.text = string.Format("Current: Lat({0:0.00}) | Long({1:0.00}) | Alt({2:0.00})", lat, lng, alt);
     }
 
 

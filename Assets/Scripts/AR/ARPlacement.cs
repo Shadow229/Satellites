@@ -18,20 +18,32 @@ public class ARPlacement : MonoBehaviour
     private ARRaycastManager arRaycastManager;
     private bool EarthSet = false;
 
+    private Earth earthScript;
+    private Options options;
+    private Image crosshair;
+
+    private bool _moving = false;
+
     private void Start()
     {
         arRaycastManager = FindObjectOfType<ARSessionOrigin>().GetComponent<ARRaycastManager>();
 
-        if (arRaycastManager)
-        {
-            Debug.Log("DEBUG: RayCastManager is not null");
-        }
+        //if (arRaycastManager)
+        //{
+        //    Debug.Log("DEBUG: RayCastManager is not null");
+        //}
+
+        //get components
+        earthScript = Earth.GetComponent<Earth>();
+        options = GameObject.Find("OptionsManager").GetComponent<Options>();
+        crosshair = GameObject.Find("Crosshair").GetComponent<Image>();
+
 
         //make sure the crosshair is hidden
-        GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
+        crosshair.GetComponent<Image>().enabled = false;
 
         //get GPS Location
-        GameObject.Find("OptionsManager").GetComponent<Options>().UpdateGPS();
+        options.UpdateGPS();
     }
 
     // Update is called once per frame
@@ -45,10 +57,13 @@ public class ARPlacement : MonoBehaviour
             //when the user touches the screen place earth
             if (placementPoseIsValid && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && !IsPointerOverUIObject())
             {
-                Debug.Log("DEBUG: placement pose is valid");
+                //Debug.Log("DEBUG: placement pose is valid");
 
                 //show earth
                 PlaceObject();
+
+                //run an update on scale first (primarily for the trails but ensures the earth & sats are scaled correctly too)
+                options.UpdateScale(earthScript.GetScale());
 
                 //Hide indicator
                 PlacementIndicator.SetActive(false);
@@ -65,10 +80,15 @@ public class ARPlacement : MonoBehaviour
                 EarthSet = true;
 
                 //make sure the crosshair is not hidden
-                GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
+                crosshair.enabled = true;
 
-                //turn on trail renders after the satellites have had time to reposition
-                StartCoroutine(TurnOnTrailRenders());
+                //if moving the position of an already positioned earth
+                if (_moving)
+                {
+                    //turn on trail renders after the satellites have had time to reposition
+                    StartCoroutine(TurnOnTrailRenders());
+                }
+
             }
         }
         else
@@ -85,29 +105,34 @@ public class ARPlacement : MonoBehaviour
                     pointCloud.gameObject.SetActive(true);
                 }
                 //make sure the crosshair is hidden
-                GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
+                crosshair.enabled = false;
 
                 //turn off the trail renderes
-                GameObject.Find("OptionsManager").GetComponent<Options>().EnableTrailRenders(false);
+                options.EnableTrailRenders(false);
+
+                //set moving bool
+                _moving = true;
             }
         }
-        
+                                                           
     }
 
     private void PlaceObject()
     {
-        Earth earth = Earth.GetComponent<Earth>();
         //set the earth origin
-        earth.YOrigin = placementPose.position.y;
+        earthScript.YOrigin = placementPose.position.y;
         //initialise
-        earth.Init();
-        //place
-        Debug.Log("DEBUG: YOrigin is: " + earth.YOrigin.ToString());
-        Debug.Log("DEBUG: The scale is: " + earth.GetScale().ToString());
-        Debug.Log("DEBUG: The multiplier is: " + earth.HeightMultiplier.ToString());
-        Debug.Log("DEBUG: Setting earth " + (earth.GetScale() * earth.HeightMultiplier).ToString() + " high.");
+        earthScript.Init();
 
-        Earth.transform.position = new Vector3(placementPose.position.x, placementPose.position.y + earth.DefaultHeight + (earth.GetScale() * earth.HeightMultiplier), placementPose.position.z);
+        //Debug.Log("DEBUG: YOrigin is: " + earthScript.YOrigin.ToString());
+        //Debug.Log("DEBUG: The scale is: " + earthScript.GetScale().ToString());
+        //Debug.Log("DEBUG: The multiplier is: " + earthScript.HeightMultiplier.ToString());
+        //Debug.Log("DEBUG: Setting earth " + (earthScript.GetScale() * earthScript.HeightMultiplier).ToString() + " high.");
+
+        //place
+        Earth.transform.position = new Vector3(placementPose.position.x,
+                                                placementPose.position.y + earthScript.DefaultHeight + (earthScript.GetScale() * earthScript.HeightMultiplier),
+                                                placementPose.position.z);
         //show mesh
         Earth.transform.GetChild(0).gameObject.SetActive(true);
     }
@@ -163,6 +188,6 @@ public class ARPlacement : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
 
-        GameObject.Find("OptionsManager").GetComponent<Options>().EnableTrailRenders(true);
+        options.EnableTrailRenders(true);
     }
 }

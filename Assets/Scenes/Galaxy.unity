@@ -1673,6 +1673,7 @@ GameObject:
   - component: {fileID: 231218717}
   - component: {fileID: 231218716}
   - component: {fileID: 231218718}
+  - component: {fileID: 231218723}
   m_Layer: 0
   m_Name: AR Camera
   m_TagString: MainCamera
@@ -1824,6 +1825,19 @@ Transform:
   m_Father: {fileID: 494456040}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &231218723
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231218714}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.01
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &377324214
 GameObject:
   m_ObjectHideFlags: 0
@@ -6888,7 +6902,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 0.068965524, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8528,7 +8542,9 @@ MonoBehaviour:
   satLoadout: {fileID: 1619256773}
   satIndividual: {fileID: 790456628}
   satSearch: {fileID: 1167838811}
+  earth: {fileID: 1155647570897163534}
   LastFetched: {fileID: 1302438761}
+  GPS: {fileID: 592459704}
   satUI: {fileID: 1011209761}
 --- !u!82 &1690554470
 AudioSource:
@@ -10099,7 +10115,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Satellites: []
   ExecutionChunkSize: 100
-  GPS: {fileID: 592459704}
 --- !u!114 &1968489052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10225,8 +10240,8 @@ RectTransform:
   m_Father: {fileID: 1103004092}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.068965524, y: 0}
+  m_AnchorMax: {x: 0.068965524, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

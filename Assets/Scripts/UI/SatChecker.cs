@@ -57,7 +57,7 @@ public class SatChecker : MonoBehaviour
 
             if (VisibleSat != hit.transform.gameObject || VisibleSat == null)
             {
-                float distance = hit.distance;
+                //float distance = hit.distance;
                 VisibleSat = hit.transform.gameObject;
                 //Debug.Log("Hit: " + hit.transform.gameObject.GetComponent<SatScript>().TLE1.ToString());
                 //Debug.Log("Hit Distanct: " + distance.ToString());
@@ -78,9 +78,10 @@ public class SatChecker : MonoBehaviour
             {
                 HighlightVisibile = false;
                 //hide the UI
-                satUI.HideUI();
+                if (satUI.UIVisible) {satUI.HideUI();}
+
                 HighlightRing.SetActive(false) ;
-                VisibleSat = null;
+                VisibleSat = null;                
             }
 
         }

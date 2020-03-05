@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 
 public struct UserLocationInfo
@@ -16,11 +17,15 @@ public struct UserLocationInfo
 
 public class GPS
 {
-    public IEnumerator GetGPSFromDevice()
+    public IEnumerator GetGPSFromDevice(TextMeshProUGUI gpsText)
     {
         // First, check if user has location service enabled
         if (!Input.location.isEnabledByUser)
+        {
+            gpsText.text = "GPS Disabled on Device!";
             yield break;
+        }
+
 
         Debug.Log("Starting location services");
 
@@ -38,6 +43,7 @@ public class GPS
         // Service didn't initialize in 20 seconds
         if (maxWait < 1)
         {
+            gpsText.text = "GPS Initialisation Failed";
             Debug.Log("Timed out");
             yield break;
         }
@@ -45,6 +51,7 @@ public class GPS
         // Connection has failed
         if (Input.location.status == LocationServiceStatus.Failed)
         {
+            gpsText.text = "GPS Connection Failed";
             Debug.Log("Unable to determine device location");
             yield break;
         }
@@ -57,7 +64,11 @@ public class GPS
             float Longitude = Input.location.lastData.longitude;
             float Altitude = Input.location.lastData.altitude;
 
+            //store it
             GameObject.Find("SatelliteManager").GetComponent<SatManager>().SetUserLocationInfo(Latitude, Longitude, Altitude);
+
+            //GUI
+            gpsText.text = string.Format("Current: Lat({0:0.00}) : Long({1:0.00}) : Alt({2:0.00})", Latitude, Longitude, Altitude);
         }
 
         Debug.Log("Stopping location services");

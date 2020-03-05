@@ -13,11 +13,13 @@ public class Options : MonoBehaviour
     public TMP_Dropdown satLoadout;
     public TMP_Dropdown satIndividual;
     public SatSearch satSearch;
+    public Earth earth;
 
     private readonly float menuspeed = 1f;
     private GameObject optionScreen;
 
     public TextMeshProUGUI LastFetched;
+    public TextMeshProUGUI GPS;
     public SatUI satUI;
 
     private bool _TrailRenderEnabled = false;
@@ -77,11 +79,11 @@ public class Options : MonoBehaviour
         //update the satelite loadouts
         tle_reader.UpdateTLEFileSelection();
 
+        //scale sats and trails
+        UpdateScale(earth.GetScale());
+
         //close the options menu
         CloseOptions();
-
-        //turn trails back on if off
-        EnableTrailRenders(true);
     }
 
     public void OpenOptions()
@@ -94,7 +96,8 @@ public class Options : MonoBehaviour
         GameObject.Find("Crosshair").GetComponent<Image>().enabled = false;
 
         //close satview UI
-        satUI.HideUI();
+        if (satUI.UIVisible) {satUI.HideUI();}
+        
 
         //play sound
         AudioSource audio = GetComponent<AudioSource>();
@@ -106,6 +109,9 @@ public class Options : MonoBehaviour
 
         optionScreen.SetActive(true);
         LeanTween.scaleX(optionScreen, 3.9f, menuspeed).setEase(LeanTweenType.easeInOutElastic);
+
+        //turn trails off
+        EnableTrailRenders(false);
 
     }
 
@@ -124,8 +130,8 @@ public class Options : MonoBehaviour
 
         LeanTween.scaleX(optionScreen, 0f, menuspeed).setEase(LeanTweenType.easeInOutElastic);
         StartCoroutine(DisableMenu());
-        //turn trails back on if off
-        EnableTrailRenders(true);
+        //turn trails back on if off with a delay to allow for sats to spawn fully
+        StartCoroutine(DelayedEnableTrailRenders(true, 1.5f));
 
         //show crosshair
         GameObject.Find("Crosshair").GetComponent<Image>().enabled = true;
@@ -147,8 +153,6 @@ public class Options : MonoBehaviour
         Camera.main.GetComponent<SatChecker>().SetHightlightRingScale(a_scale * 0.5f);
         //scale the trail renderers
         ScaleTrailRenderers(a_scale);
-        //disable all trail renders entirely
-        EnableTrailRenders(false);
     }
 
 
@@ -158,6 +162,8 @@ public class Options : MonoBehaviour
         if (_TrailRenderEnabled != val)
         {
             _TrailRenderEnabled = val;
+
+            Debug.Log("The Trail Renderers are " + (val ? "On" : "Off"));
 
             SatManager satMan = GameObject.Find("SatelliteManager").GetComponent<SatManager>();
 
@@ -171,15 +177,28 @@ public class Options : MonoBehaviour
          }
     }
 
+    private IEnumerator DelayedEnableTrailRenders(bool val, float delay)
+    {
+        Debug.Log("Delayed Trail Renderer Triggered for " + (val ? "On" : "Off"));
 
-    private void ScaleTrailRenderers(float a_scale)
+        yield return new WaitForSeconds(delay);
+
+        EnableTrailRenders(val);
+    }
+
+
+    public void ScaleTrailRenderers(float a_scale)
     {
         SatManager satMan = GameObject.Find("SatelliteManager").GetComponent< SatManager>();
 
         foreach (GameObject sat in satMan.Satellites)
         {
-            TrailRenderer tr = sat.GetComponent<TrailRenderer>();
-            tr.startWidth = a_scale / 200;
+            sat.GetComponent<TrailRenderer>().startWidth = a_scale / 200;
+            //while here, scale the audio source distance too (still playing with these to get ideal falloff)
+            sat.GetComponent<AudioSource>().minDistance = a_scale / 2.5f;
+            sat.GetComponent<AudioSource>().maxDistance = a_scale / 1.8f;
+
+            //Debug.Log("DEBUG: Audio scale is: " + a_scale.ToString());
         }
 
         Debug.Log("DEBUG: Trail Scale is: " + (a_scale / 200).ToString("n4"));
@@ -197,7 +216,8 @@ public class Options : MonoBehaviour
     {
         GPS gps = new GPS();
 
-        StartCoroutine(gps.GetGPSFromDevice());
+        GPS.text = "Triangulating...";
+        StartCoroutine(gps.GetGPSFromDevice(GPS));
     }
 
 

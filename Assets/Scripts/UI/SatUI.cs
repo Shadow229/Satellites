@@ -47,8 +47,9 @@ public class SatUI : MonoBehaviour
     {
         //update touch when changed to ios
         //// Handle screen touches.
-        if (Input.touchCount > 0 && _options.IsOptionsOpen() == false)
-        {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began && _options.IsOptionsOpen() == false)
+        { 
+            //Debug.Log("DEBUG: UI - hit Registered");
             if (UIVisible)
             {
                 HideUI();
@@ -100,30 +101,28 @@ public class SatUI : MonoBehaviour
 
     //hid ethe UI from screen
     public void HideUI()
-    {
-        if (UIVisible)
+    { 
+        //Debug.Log("DEBUG: Hiding UI");
+        SetDefaultUIValues();
+
+        UIVisible = false;
+
+        //play sound
+        AudioSource audio = GetComponent<AudioSource>();
+        if (!audio.isPlaying)
         {
-            SetDefaultUIValues();
-
-            UIVisible = false;
-
-            //play sound
-            AudioSource audio = GetComponent<AudioSource>();
-            if (!audio.isPlaying)
-            {
-                audio.clip = menuOut;
-                audio.Play();
-            }
-
-            LeanTween.scaleY(_infoPanel, 0f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
-            LeanTween.scaleX(_satVis, 0f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
-            StartCoroutine(HideUITimed());
+            audio.clip = menuOut;
+            audio.Play();
         }
-       
+
+        LeanTween.scaleY(_infoPanel, 0f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
+        LeanTween.scaleX(_satVis, 0f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
+        StartCoroutine(HideUITimed());
     }
 
     private void ShowUI(GameObject Satellite)
     {
+        //Debug.Log("DEBUG: Showing UI");
         UIVisible = true;
 
         //set our active satellite
@@ -149,9 +148,12 @@ public class SatUI : MonoBehaviour
         LeanTween.scaleX(_satVis, 2.4f, UIScaleTime).setEase(LeanTweenType.easeInOutElastic);
     }
 
+
     IEnumerator HideUITimed()
     {
         yield return new WaitForSeconds(UIScaleTime);
+
+        //Debug.Log("DEBUG: Delayed Hide Compelte");
 
         _infoPanel.SetActive(UIVisible);
         _satVis.SetActive(UIVisible);

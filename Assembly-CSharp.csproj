@@ -118,6 +118,7 @@
     <Compile Include="Assets\Scripts\DataReaders\WebGetTLEData.cs" />
     <Compile Include="Assets\Scripts\Object\Earth.cs" />
     <Compile Include="Assets\Scripts\Object\SatManager.cs" />
+    <Compile Include="Assets\Scripts\Object\SatPlaySound.cs" />
     <Compile Include="Assets\Scripts\Object\SatScript.cs" />
     <Compile Include="Assets\Scripts\TTS\TTS.cs" />
     <Compile Include="Assets\Scripts\UI\Billboard.cs" />

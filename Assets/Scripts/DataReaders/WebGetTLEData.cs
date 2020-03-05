@@ -7,13 +7,13 @@ public class WebGetTLEData
 {
 
     //NORAD WEBSITE
-    private string baseURL = "https://www.celestrak.com/NORAD/elements/";
+    private readonly string baseURL = "https://www.celestrak.com/NORAD/elements/";
 
 
     //pick up tracked TLE files from the NORAD website
     public IEnumerator GetFile(string file_name)
     {
-        Debug.Log("Attempting file get: " + file_name);
+        //Debug.Log("Attempting file get: " + file_name);
 
         string url = baseURL + file_name + ".txt";
         using (UnityWebRequest www = UnityWebRequest.Get(url))

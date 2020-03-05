@@ -86,7 +86,8 @@ public class TLE_Reader : MonoBehaviour
             {
                 if (SelectedSat == "" || SelectedSat.CompareTo(tle1) == 0)
                 {
-                    Debug.Log("DEBUG: Instantiating new sat: " + tle1.ToString());
+                    //Debug.Log("DEBUG: Instantiating new sat: " + tle1.ToString());
+
                     //instantiate new satellite prefab
                     GameObject sat = Instantiate(SatellitePrefab, new Vector3(0, 0, 0), Quaternion.identity, SatelliteManager.transform);
                     //name it

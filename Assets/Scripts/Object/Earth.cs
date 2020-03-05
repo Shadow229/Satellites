@@ -51,11 +51,11 @@ public class Earth : MonoBehaviour {
 
     public void Init()
     {
-        Debug.Log("DEBUG: Earth Init: " + _initialised.ToString());
+        //Debug.Log("DEBUG: Earth Init: " + _initialised.ToString());
         //can potentially be ran multiple times from changing placement of AR position
         if (!_initialised)
         {
-            Debug.Log("DEBUG: Initialising Earth!");
+            //Debug.Log("DEBUG: Initialising Earth!");
 
             _initialised = true;
             AxisTilt = Quaternion.Euler(-0.29f, -37.65f, 0.4f);
